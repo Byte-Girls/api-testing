@@ -4,9 +4,9 @@ import pytest
 @pytest.mark.smoke
 def test_Obtener_los_datos_del_objeto_con_ID_5(): 
     print ("hola1")
-    url = "https://collectionapi.metmuseum.org"
+    url = "https://collectionapi.metmuseum.org/public/collection/v1"
 
-    list_url = url + "/public/collection/v1/objects/5"
+    list_url = url + "/objects/5"
 
     response = requests.get(list_url)
     print ("hola")
