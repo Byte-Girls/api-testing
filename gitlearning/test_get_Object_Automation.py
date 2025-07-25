@@ -50,6 +50,25 @@ Pasos
 6. Validar que el cuerpo contiene la lista de departamentos con departmentId y displayName.
 
 Resultado Esperado
+- Código HTTP: 200 OK.- Respuesta con una lista JSON que contenga los departamentos:{
+    "departments": [
+        {
+            "departmentId": 1,
+            "displayName": "American Decorative Arts"
+        },
+        {
+            "departmentId": 3,
+            "displayName": "Ancient Near Eastern Art"
+        },
+        {
+            "departmentId": 4,
+            "displayName": "Arms and Armor"
+        },
+        {
+            "departmentId": 5,
+            "displayName": "Arts of Africa, Oceania, and the Americas"
+        },
+...
 
 Evidencias
 
