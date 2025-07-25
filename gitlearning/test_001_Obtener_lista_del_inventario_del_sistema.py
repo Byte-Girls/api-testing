@@ -79,7 +79,7 @@ Código HTTP: 404 Not Found
 Mensaje de error indicando que la orden no existe.
 """
 @pytest.mark.functional
-def test_002_validar_respuesta_404_al_consultar_orden_inexistente():    
+def test_002_error_404_al_consultar_orden_con_id_inexistente():    
     url = "https://petstore.swagger.io/v2"
     endpoint = "/store/order/999999"
     complete_url = url + endpoint
@@ -106,3 +106,11 @@ El usuario envía un valor no numérico en el parámetro id y debe recibir un er
 Código HTTP: 400 Bad Request
 Mensaje del de error por parámetro inválido.
 """
+
+@pytest.mark.functional
+def test_003_validar_error_400_al_enviar_letras_en_el_parametro_id_de_orden():    
+    url = "https://petstore.swagger.io/v2"
+    endpoint = "/store/order/abc123"
+    complete_url = url + endpoint
+    response = requests.get(complete_url)
+    assert response.status_code == 400
