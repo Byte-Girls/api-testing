@@ -1,0 +1,1 @@
+BASE_URI="https://api.restful-api.dev/"

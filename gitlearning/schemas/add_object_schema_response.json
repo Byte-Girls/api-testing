@@ -1,0 +1,44 @@
+schema = {
+        
+    "type": "object",
+    "required": [
+        "createdAt",
+        "data",
+        "id",
+        "name"
+    ],
+    "properties": {
+        "id": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "createdAt": {
+            "type": "string"
+        },
+        "data": {
+            "type": "object",
+            "required": [
+                "CPU model",
+                "Hard disk size",
+                "price",
+                "year"
+            ],
+            "properties": {
+                "year": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "CPU model": {
+                    "type": "string"
+                },
+                "Hard disk size": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
