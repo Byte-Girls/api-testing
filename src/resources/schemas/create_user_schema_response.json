@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "boolean"
+        },
+        "employee": {
+          "type": "object",
+          "properties": {
+            "empNumber": {
+              "type": "integer"
+            },
+            "employeeId": {
+              "type": "string"
+            },
+            "firstName": {
+              "type": "string"
+            },
+            "middleName": {
+              "type": "string"
+            },
+            "lastName": {
+              "type": "string"
+            },
+            "terminationId": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "empNumber",
+            "employeeId",
+            "firstName",
+            "middleName",
+            "lastName",
+            "terminationId"
+          ]
+        },
+        "userRole": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            },
+            "displayName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "displayName"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "userName",
+        "deleted",
+        "status",
+        "employee",
+        "userRole"
+      ]
+    },
+    "meta": {
+      "type": "array",
+      "items": {}
+    },
+    "rels": {
+      "type": "array",
+      "items": {}
+    }
+  },
+  "required": [
+    "data",
+    "meta",
+    "rels"
+  ]
+}
