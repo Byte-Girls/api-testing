@@ -19,6 +19,5 @@ def test_crear_usuario_con_datos_validos(get_url, get_token):
         "Authorization": f"Bearer {get_token}"
     }
     response = requests.post(url, headers=headers, data=payload)
-    print(response.text)
     assert response.status_code == 200
     assert_create_user_response_schema(response)
