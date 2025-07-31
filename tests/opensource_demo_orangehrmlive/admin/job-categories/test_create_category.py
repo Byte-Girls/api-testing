@@ -6,8 +6,9 @@ from src.assertions.create_category_assertions import *
 
 @pytest.mark.smoke
 @pytest.mark.regression
-def test_BYT_15_crear_una_categoria_con_nombre_valido(get_url, get_token):
-#Descripción:  El admin debe crear una categoria de trabajo
+@pytest.mark.funcional
+def test_BYT_T9_crear_una_categoria_con_nombre_valido(get_url, get_token):
+#Descripción:Validar que el administrador pueda crear correctamente una categoría de trabajo con un nombre válido.Al enviar una solicitud POST al endpoint /admin/job-categories con un JSON que contenga un nombre de categoría único
 
   url = f"{get_url}/admin/job-categories"
     

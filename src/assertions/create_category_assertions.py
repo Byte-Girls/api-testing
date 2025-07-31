@@ -8,4 +8,5 @@ def assert_create_category_response_schema(response):
         jsonschema.validate(instance=response.json(), schema=schema)
     except jsonschema.exceptions.ValitoionError  as err:
         pytest.fail(f"JSON schema no coincide. Error: {err}")
-        
+
+    
