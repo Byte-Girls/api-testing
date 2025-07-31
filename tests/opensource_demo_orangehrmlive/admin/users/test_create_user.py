@@ -2,14 +2,11 @@ import json
 import random
 import pytest
 import requests
-import jsonschema
 from src.assertions.create_user_assertions import *
 
 @pytest.mark.smoke
 def test_crear_usuario_con_datos_validos(get_url, get_token):
-    # TODO: Pendiente desarrollaar la funciones get_url, get_token
-    token = ""
-    url = "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/admin/users"
+    url = f"{get_url}/admin/users" 
     payload = json.dumps({
         "status": True,
         "password": "$435sdf35REWfs",
@@ -19,7 +16,7 @@ def test_crear_usuario_con_datos_validos(get_url, get_token):
     })
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {token}"
+        "Authorization": f"Bearer {get_token}"
     }
     response = requests.post(url, headers=headers, data=payload)
     print(response.text)
