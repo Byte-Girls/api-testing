@@ -42,4 +42,28 @@ def test_BYT_T9_crear_una_categoria_con_nombre_valido(get_url, get_token):
   response = response.json()["data"]
   assert response["name"] == expected_name
  
- 
+@pytest.mark.smoke
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.xfail(reason="Known Issue. BYT-31: La creación de una categoría permite números en el campo nombre", run=False)
+def test_BYT_T14_crear_una_categoria_con_el_campo_nombre_como_numero(get_url, get_token):
+  """
+  Descripción: Verifica que el campo "nombre" no acepte valores numéricos
+  """
+
+  url = f"{get_url}/admin/job-categories"
+  
+  payload = json.dumps({
+    "name": "78945"
+  })
+  headers = {
+    'Content-Type': 'application/json',
+    'Authorization':f'{get_token}'
+  }
+
+  response = requests.post( url, headers=headers, data=payload)
+  assert response.status_code == 400  
+  
+
+
