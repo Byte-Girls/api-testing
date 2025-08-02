@@ -46,3 +46,17 @@ def test_BYT_T38_crear_estado_sin_nombre(statuses_url, header):
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 422
   
+  
+@pytest.mark.valor_limite
+@pytest.mark.regression
+def test_BYT_T40_crear_estado_con_nombre_de_51_caracteres(statuses_url, header):
+    """
+    Descripción: El admin crea un estado de nombre que contiene 51 caractes y el sistema no debe permitir
+    """
+        
+    payload = json.dumps({
+        "name" : "Lorem Ipsum is simply dummy text of the printing an" 
+    })
+        
+    response = requests.post(statuses_url, headers=header, data=payload)
+    assert response.status_code == 422
