@@ -2,6 +2,7 @@ import json
 import random
 import pytest
 import requests
+import string
 from src.assertions.common_assertions import * 
     
 @pytest.mark.funtional_positive
@@ -60,3 +61,19 @@ def test_BYT_T40_crear_estado_con_nombre_de_51_caracteres(statuses_url, header):
         
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 422
+
+
+@pytest.mark.valor_limite
+@pytest.mark.regression
+def test_BYT_T47_crear_estado_con_nombre_de_1_caracteres(statuses_url, header):
+    """
+    Descripción: El admin crea un estado de nombre que contiene 1 caracter y el sistema si permite
+    """
+    letra_un_caracter = random.choice(string.ascii_letters)
+       
+    payload = json.dumps({
+        "name" : letra_un_caracter 
+    })
+        
+    response = requests.post(statuses_url, headers=header, data=payload)
+    assert response.status_code == 200
