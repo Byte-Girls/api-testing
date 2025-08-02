@@ -1,23 +1,19 @@
 import requests
 import json
 import pytest
-from src.assertions.get_category_assertions import *
+from src.assertions.common_assertions import *
 
 @pytest.mark.smoke
 @pytest.mark.regression
 @pytest.mark.funcional
-def test_BYT_T2_Obtener_una_categoria_de_trabajo_existente_con_id_válido(get_url,get_token):
+def test_BYT_T2_Obtener_una_categoria_de_trabajo_existente_con_id_valido(category_url, header):
   """
   Descripción:  Verificar que el administrador pueda consultar una categoría de trabajo existente 
   proporcionando un ID válido.
   """
-  url = f"{get_url}/admin/job-categories/1" 
-
-  response =requests.get(url) 
-  headers = {
-    'Authorization': f'{get_token}'
-  }
-  response = requests.get(url, headers=headers)
+  url = f"{category_url}/1"
+  response = requests.get(url, headers=header)
   assert response.status_code == 200
-  assert_get_category_response_schema(response)  
+  assert_resource_response_schema(response, "category_schema_response.json")
+  
   
