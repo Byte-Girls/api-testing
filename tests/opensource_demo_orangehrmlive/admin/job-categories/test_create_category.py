@@ -64,6 +64,51 @@ def test_BYT_T14_crear_una_categoria_con_el_campo_nombre_como_numero(get_url, ge
 
   response = requests.post( url, headers=headers, data=payload)
   assert response.status_code == 400  
+
+@pytest.mark.smoke
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.xfail(reason="Known Issue. BYT-33: La creación de una categoría permite caracteres especiales en el campo nombre", run=False)
+def test_BYT_T12_crear_una_categoria_con_caracteres_especiales_en_el_campo_name(get_url, get_token):
+  """
+    Descripción: Verifica que el campo "nombre" no acepte caracteres especiales
+    """
+  url = f"{get_url}/admin/job-categories"
+      
+  payload = json.dumps({
+    "name": "  #$%()*| "
+  })
+  headers = {
+    'Content-Type': 'application/json',
+    'Authorization':f'{get_token}'
+  }
+
+  response = requests.post(url, headers=headers, data=payload)
+  assert response.status_code == 400  
   
 
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(get_url, get_token):
+  """
+  Validar que el sistema no permita la creación de una nueva categoría de trabajo 
+  con un nombre que ya existe en el sistema.
+  """
+
+  url = f"{get_url}/admin/job-categories"
+  
+
+  payload = json.dumps({
+    "name": "Administrador"
+  })
+  headers = {
+    'Content-Type': 'application/json',
+    'Authorization':f'{get_token}'
+  }
+
+  response = requests.post(url, headers=headers, data=payload)
+  assert response.status_code == 422
+  
 
