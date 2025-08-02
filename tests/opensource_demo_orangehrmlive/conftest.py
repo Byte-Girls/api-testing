@@ -24,3 +24,6 @@ def category_url():
 def user_url():
     return f"{conf.BASE_URI}/admin/users"
 
+@pytest.fixture(scope="session")
+def statuses_url():
+    return f"{conf.BASE_URI}/admin/employment-statuses"
