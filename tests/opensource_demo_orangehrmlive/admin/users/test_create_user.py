@@ -2,11 +2,13 @@ import json
 import random
 import pytest
 import requests
-from src.assertions.create_user_assertions import *
+from src.assertions.common_assertions import *
 
 @pytest.mark.smoke
-def test_crear_usuario_con_datos_validos(get_url, get_token):
-    url = f"{get_url}/admin/users" 
+def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header):
+    """
+    Descripción: Verifica que la creación de un usuario con datos válidos devuelva un código de estado HTTP 200 OK.
+    """
     payload = json.dumps({
         "status": True,
         "password": "$435sdf35REWfs",
@@ -14,10 +16,29 @@ def test_crear_usuario_con_datos_validos(get_url, get_token):
         "userRoleId": 1,
         "empNumber": "104"
     })
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {get_token}"
-    }
-    response = requests.post(url, headers=headers, data=payload)
+
+    response = requests.post(user_url, headers=header, data=payload)
     assert response.status_code == 200
-    assert_create_user_response_schema(response)
+    assert_resource_response_schema(response, "user_schema_response.json")
+    response_data = response.json()["data"]
+    # Comparación directa campo a campo
+    expected_payload_dict = json.loads(payload)
+    assert response_data["status"] == expected_payload_dict["status"]
+    assert response_data["username"] == expected_payload_dict["userName"]
+    assert response_data["userRoleId"] == expected_payload_dict["userRole"]["id"]
+    assert response_data["empNumber"] == expected_payload_dict["employee"]["104"]
+
+    # Validación con el get
+    url = f"{user_url}/{response_data['id']}" 
+    response = requests.get(url, headers=header)
+    assert response.status_code == 200
+    response_data = response.json()["data"]
+    # Comparación directa campo a campo
+    assert response_data["status"] == expected_payload_dict["status"]
+    assert response_data["username"] == expected_payload_dict["userName"]
+    assert response_data["userRoleId"] == expected_payload_dict["userRole"]["id"]
+    assert response_data["empNumber"] == expected_payload_dict["employee"]["104"]
+
+
+
+
