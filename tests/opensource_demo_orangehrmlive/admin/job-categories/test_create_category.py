@@ -51,46 +51,35 @@ def test_BYT_T14_crear_una_categoria_con_el_campo_nombre_como_numero(category_ur
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.xfail(reason="Known Issue. BYT-33: La creación de una categoría permite caracteres especiales en el campo nombre", run=False)
-def test_BYT_T12_crear_una_categoria_con_caracteres_especiales_en_el_campo_name(get_url, get_token):
+def test_BYT_T12_crear_una_categoria_con_caracteres_especiales_en_el_campo_name(category_url, header):
   """
-    Descripción: Verifica que el campo "nombre" no acepte caracteres especiales
-    """
-  url = f"{get_url}/admin/job-categories"
-      
+  Descripción: Verifica que el campo "nombre" no acepte caracteres especiales
+  """   
   payload = json.dumps({
     "name": "  #$%()*| "
   })
-  headers = {
-    'Content-Type': 'application/json',
-    'Authorization':f'{get_token}'
-  }
 
-  response = requests.post(url, headers=headers, data=payload)
+  response = requests.post(category_url, headers=header, data=payload)
   assert response.status_code == 400  
 
 @pytest.mark.smoke
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
-def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(get_url, get_token):
+def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(category_url, header):
   """
   Validar que el sistema no permita la creación de una nueva categoría de trabajo 
   con un nombre que ya existe en el sistema.
   """
-
   url = f"{get_url}/admin/job-categories"
-  
   payload = json.dumps({
     "name": "Administrador"
   })
-  headers = {
-    'Content-Type': 'application/json',
-    'Authorization':f'{get_token}'
-  }
+
   #Primera creación 
-  requests.post(url, headers=headers, data=payload)
+  requests.post(category_url, headers=header, data=payload)
   #Segunda creación con nombre duplicado
-  response = requests.post(url, headers=headers, data=payload)
+  response = requests.post(category_url, headers=header, data=payload)
   assert response.status_code == 422
   
 
@@ -129,3 +118,16 @@ def test_BYT_T13_Crear_una_categoría_con_nombre_mayor_a_50_caracteres(category_
   response = requests.post(category_url, headers=header, data=payload)
   assert response.status_code == 422
   
+
+@pytest.mark.negativo
+def test_BYT_T11_Crear_una_categoria_sin_enviar_el_campo_nombre(category_url, header):
+  """
+  Verificar que el sistema no permita la creación de una categoría de trabajo cuando no se incluye el campo name  
+  Enviar una solicitud POST al endpoint /admin/job-categories con el cuerpo vacío {}.
+  """
+  payload = json.dumps({})
+
+  response = requests.post(category_url, headers=header, data=payload)
+  assert response.status_code == 422
+  assert_resource_response_schema(response, "error_422_schema_response.json")
+
