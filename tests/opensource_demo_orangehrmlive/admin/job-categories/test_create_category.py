@@ -108,7 +108,8 @@ def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(get_url, get_token):
     'Authorization':f'{get_token}'
   }
 
+  #Primera creación 
+  requests.post(url, headers=headers, data=payload)
+  #Segunda creación con nombre duplicado
   response = requests.post(url, headers=headers, data=payload)
   assert response.status_code == 422
-  
-
