@@ -80,7 +80,6 @@ def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(get_url, get_token):
 
   url = f"{get_url}/admin/job-categories"
   
-
   payload = json.dumps({
     "name": "Administrador"
   })
@@ -93,7 +92,7 @@ def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(get_url, get_token):
   #Segunda creación con nombre duplicado
   response = requests.post(url, headers=headers, data=payload)
   assert response.status_code == 422
-
+  
 
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -109,6 +108,7 @@ def test_BYT_T15_Verificar_que_el_JSON_de_respuesta_contenga_los_campos_id_name(
   })
   
   response = requests.post(category_url, headers=header, data=payload)
+  assert_resource_response_schema(response, "category_schema_response.json")
   assert response.status_code == 200  
   response = response.json()["data"]
   assert response["name"] == expected_name
@@ -121,11 +121,11 @@ def test_BYT_T13_Crear_una_categoría_con_nombre_mayor_a_50_caracteres(category_
   Verificar que el sistema no permita crear una categoría de trabajo cuando el valor del 
   campo name supera los 50 caracteres permitidos.
   """
-
+  name_with_more_than_50_characters = "a" * 51
   payload = json.dumps({
-    "name": "AdminismmmAdminismmmAdminismmmAdminismmmAdminismmip"
+    "name": name_with_more_than_50_characters
   })
   
   response = requests.post(category_url, headers=header, data=payload)
   assert response.status_code == 422
-
+  
