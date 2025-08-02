@@ -32,15 +32,15 @@ def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
     assert response_data["name"] == expected_payload_dict["name"]
 
 
-@pytest.mark.valor_limite
+@pytest.mark.negativo
 @pytest.mark.regression
-def test_BYT_T40_crear_estado_con_nombre_de_51_caracteres(statuses_url, header):
+def test_BYT_T38_crear_estado_sin_nombre(statuses_url, header):
     """
-    Descripción: El admin debe poder crear un nuevo estado de empleado
+    Descripción: El admin crea un estado sin nombre, vacio, no debe permitir el sistema
     """
     
     payload = json.dumps({
-        "name" : "Lorem Ipsum is simply dummy text of the printing an" 
+        "name" : "" 
     })
     
     response = requests.post(statuses_url, headers=header, data=payload)
