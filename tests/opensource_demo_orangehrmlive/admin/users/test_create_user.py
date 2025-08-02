@@ -23,10 +23,10 @@ def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header):
     response_data = response.json()["data"]
     # Comparación directa campo a campo
     expected_payload_dict = json.loads(payload)
-    assert response_data["status"] == expected_payload_dict["status"]
-    assert response_data["username"] == expected_payload_dict["userName"]
-    assert response_data["userRoleId"] == expected_payload_dict["userRole"]["id"]
-    assert response_data["empNumber"] == expected_payload_dict["employee"]["104"]
+    assert expected_payload_dict["status"] == response_data["status"]
+    assert expected_payload_dict["username"] == response_data["userName"]
+    assert expected_payload_dict["userRoleId"] == response_data["userRole"]["id"]
+    assert expected_payload_dict["empNumber"] == str(response_data["employee"]["empNumber"])
 
     # Validación con el get
     url = f"{user_url}/{response_data['id']}" 
@@ -34,10 +34,10 @@ def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header):
     assert response.status_code == 200
     response_data = response.json()["data"]
     # Comparación directa campo a campo
-    assert response_data["status"] == expected_payload_dict["status"]
-    assert response_data["username"] == expected_payload_dict["userName"]
-    assert response_data["userRoleId"] == expected_payload_dict["userRole"]["id"]
-    assert response_data["empNumber"] == expected_payload_dict["employee"]["104"]
+    assert expected_payload_dict["status"] == response_data["status"]
+    assert expected_payload_dict["username"] == response_data["userName"]
+    assert expected_payload_dict["userRoleId"] == response_data["userRole"]["id"]
+    assert expected_payload_dict["empNumber"] == str(response_data["employee"]["empNumber"])
 
 
 
