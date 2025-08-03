@@ -124,18 +124,41 @@ def test_BYT_T86_crear_un_estado_de_empleado_con_caracteres_especiales(statuses_
 @pytest.mark.funcional
 @pytest.mark.positivo
 @pytest.mark.regression
-def test_BYT_T48_crear_un_estado_de_empleado_con_caracteres_de_50_caracteres(statuses_url, header):
+def test_BYT_T40_crear_un_estado_de_empleado_con_caracteres_de_50_caracteres(statuses_url, header):
     """
     Descripción: El admin quiere crear un nuevo estado de empleado con el campo name, de 50 caracteres especiales, el cual es el sistema debe permitir
     """
     nombre_valido = ''.join(random.choices(string.ascii_letters, k=50))
     logger.debug(f"Letra generada para el nombre: {nombre_valido}")
-    
+
     payload = json.dumps({
         "name" : nombre_valido
     })
-    
+
     logger.debug(f"Payload enviado: {payload}") 
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 200
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
+
+@pytest.mark.funcional
+@pytest.mark.positivo
+@pytest.mark.smoke
+@pytest.mark.regression
+def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
+    """
+    Descripción: El admin quiere crear un estado de empleado duplicado, el sistema no debe permitir
+    """
+    nombre_duplicado = ''.join(random.choices(string.ascii_letters, k=6))
+    logger.debug(f"letra generada para el nombre: {nombre_duplicado}")
+    
+    payload = json.dumps({
+        "name" : nombre_duplicado
+    })
+    
+    logger.info(f"Nombre aleatorio generado: {nombre_duplicado}") 
+    response_one = requests.post(statuses_url, headers=header, data=payload)
+    assert response_one.status_code == 200
+    
+    response_two = requests.post(statuses_url, headers=header, data=payload)
+    assert response_two.status_code == 422
+    assert_resource_response_schema(response_one, "create_employment_status_schema_response.json")
