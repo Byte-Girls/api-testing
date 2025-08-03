@@ -71,7 +71,6 @@ def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(category_url, header):
   Validar que el sistema no permita la creación de una nueva categoría de trabajo 
   con un nombre que ya existe en el sistema.
   """
-  url = f"{get_url}/admin/job-categories"
   payload = json.dumps({
     "name": "Administrador"
   })
@@ -99,8 +98,8 @@ def test_BYT_T15_Verificar_que_el_JSON_de_respuesta_contenga_los_campos_id_name(
   response = requests.post(category_url, headers=header, data=payload)
   assert_resource_response_schema(response, "category_schema_response.json")
   assert response.status_code == 200  
-  response = response.json()["data"]
-  assert response["name"] == expected_name
+  response_data = response.json()["data"]
+  assert response_data["name"] == expected_name
 
 @pytest.mark.regression
 @pytest.mark.funcional
