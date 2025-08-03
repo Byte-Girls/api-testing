@@ -39,7 +39,7 @@ def test_BYT_T27_obtener_usuario_con_ID_inexistente_devuelve_código_404_y_mensa
     url = f"{user_url}/999999"
     response = requests.get(url, headers=header)
     assert response.status_code == 404
-    assert_resource_response_schema(response, "error_404_schema_response.json")
+    assert_resource_response_schema(response, "error_message_schema_response.json")
 
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -80,10 +80,10 @@ def test_BYT_T52_obtener_usuario_con_ID_no_numérico_abc123_devuelve_422_unproce
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
-@pytest.mark.xfail(reason="Known Issue. BYT-37: GET /users/ sin parámetro {id} devuelve 422 en lugar de 404", run=False)
-def test_BYT_T53_obtener_usuario_con_ID_vacío_sin_parámetro_id_devuelve_404_not_found(user_url, header):
+@pytest.mark.xfail(reason="Known Issue. BYT-37: GET /users/ sin parámetro {id} devuelve 404 en lugar de 422", run=False)
+def test_BYT_T53_obtener_usuario_con_ID_vacío_sin_parámetro_id_devuelve_422_unprocessable_content(user_url, header):
     """
-    Descripción: Verifica que al omitir el parámetro ID, el sistema devuelve 404 Not Found.
+    Descripción: Verifica que al omitir el parámetro ID, el sistema devuelve 422 Unprocessable Content.
     """
     url = f"{user_url}/"
     response = requests.get(url, headers=header)
@@ -101,7 +101,7 @@ def test_BYT_T54_obtener_usuario_con_ID_numérico_máximo_válido_4004_cifras_de
     url = f"{user_url}/{id_4004_digits}"
     response = requests.get(url, headers=header)
     assert response.status_code == 404
-    assert_resource_response_schema(response, "error_404_schema_response.json")
+    assert_resource_response_schema(response, "error_message_schema_response.json")
 
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -126,4 +126,31 @@ def test_BYT_T56_obtener_usuario_con_ID_de_8143_cifras_devuelve_403_forbidden(us
     url = f"{user_url}/{id_8143_digits}"
     response = requests.get(url, headers=header)
     assert response.status_code == 403
+
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.smoke
+def test_BYT_T28_solicitud_sin_autenticacion_devuelve_401_unauthorized(user_url):
+    """
+    Descripción: Verifica que una solicitud sin encabezado de autenticación devuelva un código 401 Unauthorized.
+    """
+    response = requests.get(user_url)  # Sin headers
+    assert response.status_code == 401
+    assert_resource_response_schema(response, "error_message_schema_response.json")
+
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.xfail(reason="Known Issue. BYT-49: API get user se queda estancada con token inválido — no responde ni devuelve error", run=False)
+def test_BYT_T59_solicitud_con_token_invalido_devuelve_401_unauthorized(user_url):
+    """
+    Descripción: Verifica que una solicitud con un token inválido en el encabezado devuelva un código 401 Unauthorized.
+    """
+    invalid_header = {
+        "Authorization": "Bearer token_invalido"
+    }
+    response = requests.get(user_url, headers=invalid_header)
+    assert response.status_code == 401
+    assert_resource_response_schema(response, "error_message_schema_response.json")
 
