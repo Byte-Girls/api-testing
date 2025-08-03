@@ -108,7 +108,7 @@ def test_BYT_T85_crear_un_estado_de_empleado_con_nombre_de_numeros(statuses_url,
 @pytest.mark.negativo
 @pytest.mark.regression
 @pytest.mark.xfail(reason="La app permite crear un estado con solo caracteres especiales BYT-52", run=False)
-def test_BYT_T85_crear_un_estado_de_empleado_con_caracteres_especiales(statuses_url, header):
+def test_BYT_T86_crear_un_estado_de_empleado_con_caracteres_especiales(statuses_url, header):
     """
     Descripción: El admin quiere crear un nuevo estado de empleado con el campo name, de solo caracteres especiales
     """
@@ -120,4 +120,22 @@ def test_BYT_T85_crear_un_estado_de_empleado_con_caracteres_especiales(statuses_
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 400
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
+
+@pytest.mark.funcional
+@pytest.mark.positivo
+@pytest.mark.regression
+def test_BYT_T48_crear_un_estado_de_empleado_con_caracteres_de_50_caracteres(statuses_url, header):
+    """
+    Descripción: El admin quiere crear un nuevo estado de empleado con el campo name, de 50 caracteres especiales, el cual es el sistema debe permitir
+    """
+    nombre_valido = ''.join(random.choices(string.ascii_letters, k=50))
+    logger.debug(f"Letra generada para el nombre: {nombre_valido}")
     
+    payload = json.dumps({
+        "name" : nombre_valido
+    })
+    
+    logger.debug(f"Payload enviado: {payload}") 
+    response = requests.post(statuses_url, headers=header, data=payload)
+    assert response.status_code == 200
+    assert_resource_response_schema(response, "create_employment_status_schema_response.json")
