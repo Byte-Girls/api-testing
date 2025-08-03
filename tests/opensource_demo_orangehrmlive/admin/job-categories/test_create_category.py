@@ -61,8 +61,8 @@ def test_BYT_T12_crear_una_categoria_con_caracteres_especiales_en_el_campo_name(
 
   response = requests.post(category_url, headers=header, data=payload)
   assert response.status_code == 400  
-  
 
+@pytest.mark.smoke
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -84,6 +84,40 @@ def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(category_url, header):
 
 @pytest.mark.regression
 @pytest.mark.funcional
+@pytest.mark.positivo
+def test_BYT_T15_Verificar_que_el_JSON_de_respuesta_contenga_los_campos_id_name(category_url, header):
+  """
+  Validar que, al crear una categoría de trabajo exitosamente mediante el endpoint correspondiente, 
+  el cuerpo de la respuesta contenga los campos id y name.
+  """
+  expected_name = "Recursos" + str(random.randint(1000, 9999))
+  payload = json.dumps({
+    "name": expected_name
+  })
+  
+  response = requests.post(category_url, headers=header, data=payload)
+  assert_resource_response_schema(response, "category_schema_response.json")
+  assert response.status_code == 200  
+  response_data = response.json()["data"]
+  assert response_data["name"] == expected_name
+
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+def test_BYT_T13_Crear_una_categoría_con_nombre_mayor_a_50_caracteres(category_url, header):
+  """
+  Verificar que el sistema no permita crear una categoría de trabajo cuando el valor del 
+  campo name supera los 50 caracteres permitidos.
+  """
+  name_with_more_than_50_characters = "a" * 51
+  payload = json.dumps({
+    "name": name_with_more_than_50_characters
+  })
+  
+  response = requests.post(category_url, headers=header, data=payload)
+  assert response.status_code == 422
+  
+
 @pytest.mark.negativo
 def test_BYT_T11_Crear_una_categoria_sin_enviar_el_campo_nombre(category_url, header):
   """
