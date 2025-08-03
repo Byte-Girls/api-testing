@@ -3,8 +3,11 @@ import random
 import pytest
 import requests
 import string
+import logging
 from src.assertions.common_assertions import * 
-    
+
+logger = logging.getLogger(__name__) # Crear instancia del logger
+   
 @pytest.mark.funtional_positive
 @pytest.mark.regression
 def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
@@ -70,10 +73,13 @@ def test_BYT_T47_crear_estado_con_nombre_de_1_caracteres(statuses_url, header):
     Descripción: El admin crea un estado de nombre que contiene 1 caracter y el sistema si permite
     """
     letra_un_caracter = random.choice(string.ascii_letters)
-       
+    logger.debug(f"Letra generada para el nombre: {letra_un_caracter}")
+    
     payload = json.dumps({
         "name" : letra_un_caracter 
     })
-        
+    
+    logger.debug(f"Payload enviado: {payload}") 
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 200
+    assert_resource_response_schema(response, "create_employment_status_schema_response.json")
