@@ -182,4 +182,20 @@ def test_BYT_T39_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
     response = requests.post(statuses_url, headers=headers, data=payload)
     logger.info(f"Código de respuesta: {response.status_code}")
     assert response.status_code == 401
+
+@pytest.mark.funcional
+@pytest.mark.positivo
+@pytest.mark.smoke
+@pytest.mark.regression
+def test_BYT_T92_crear_un_estado_de_empleado_con_el_campo_name_de_espacio(statuses_url, header):
+    """
+    Descripción: El admin quiere crear un nuevo estado de empleado, con el campo name que solo contenga espacio
+    """
+    name_espacio=" "
+    payload = json.dumps({
+        "name" : name_espacio
+    })
+    
+    response = requests.post(statuses_url, headers=header, data=payload)
+    assert response.status_code == 422 
     
