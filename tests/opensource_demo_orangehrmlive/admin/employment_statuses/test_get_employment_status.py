@@ -124,4 +124,15 @@ def test_BYT_T82_obtener_informacion_del_estado_sin_mandar_el_ID(statuses_url, h
     
     response = requests.get(url, headers=header)
     assert response.status_code == 404  
+
+@pytest.mark.negativo
+@pytest.mark.regression
+def test_BYT_T91_obtener_informacion_del_estado_con_ID_negativos(statuses_url, header):
+    """
+    Descripción: El admin intenta obtener información del estado, mandando id negativo
+    """
+    url = f"{statuses_url}/-1"
+    
+    response = requests.get(url, headers=header)
+    assert response.status_code == 422 
     
