@@ -24,7 +24,7 @@
               "type": "integer"
             },
             "employeeId": {
-              "type": "string"
+              "type": ["string", "null"]
             },
             "firstName": {
               "type": "string"
