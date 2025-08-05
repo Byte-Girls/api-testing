@@ -7,8 +7,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="module")
-def user(user_url, header, get_url):
-    employee_number = create_employee(get_url, header)["empNumber"]
+def user(user_url, header, get_url, create_employee):
+    employee_number = create_employee["empNumber"]
     payload = json.dumps({
         "status": True,
         "password": "$435sdf35REWfs",
@@ -22,11 +22,10 @@ def user(user_url, header, get_url):
     assert response.status_code == 200
     yield response.json()["data"]
     delete_user(user_url, header, response.json()["data"]["id"])
-    delete_employee(get_url, header, employee_number)
 
 @pytest.fixture(scope="function")
-def disabled_user(user_url, header, get_url):
-    employee_number = create_employee(get_url, header)["empNumber"]
+def disabled_user(user_url, header, get_url, create_employee):
+    employee_number = create_employee["empNumber"]
     payload = json.dumps({
         "status": False,
         "password": "$435sdf35REWfs",
@@ -39,8 +38,6 @@ def disabled_user(user_url, header, get_url):
     assert response.status_code == 200
     yield response.json()["data"]
     delete_user(user_url, header, response.json()["data"]["id"])
-    delete_employee(get_url, header, employee_number)
-
 
 def delete_user(user_url, header, user_id):
     payload = json.dumps({
@@ -50,6 +47,7 @@ def delete_user(user_url, header, user_id):
     response = requests.delete(user_url, headers=header, data=payload)
     assert response.status_code == 200
 
+@pytest.fixture(scope="module")
 def create_employee(get_url, header):
     url = f"{get_url}/pim/employees"
     payload = json.dumps({
@@ -59,7 +57,8 @@ def create_employee(get_url, header):
 
     response = requests.post(url, headers=header, data=payload)
     assert response.status_code == 200
-    return response.json()["data"]
+    yield response.json()["data"]
+    delete_employee(get_url, header, response.json()["data"]["empNumber"])
 
 def delete_employee(get_url, header, employee_id):
     url = f"{get_url}/pim/employees"
