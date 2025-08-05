@@ -162,3 +162,24 @@ def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
     response_two = requests.post(statuses_url, headers=header, data=payload)
     assert response_two.status_code == 422
     assert_resource_response_schema(response_one, "create_employment_status_schema_response.json")
+
+@pytest.mark.funcional
+@pytest.mark.positivo
+@pytest.mark.smoke
+@pytest.mark.regression
+def test_BYT_T39_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
+    """
+    Descripción: El admin quiere crear un nuevo estado de empleado, pero sin autenticación
+    """
+    payload = json.dumps({
+        "name" : "Calani" + str(random.randint(1000, 9999))
+    })
+    #sin el token
+    headers = {
+        "Content-Type": "application/json"
+    }
+    
+    response = requests.post(statuses_url, headers=headers, data=payload)
+    logger.info(f"Código de respuesta: {response.status_code}")
+    assert response.status_code == 401
+    
