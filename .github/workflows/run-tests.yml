@@ -36,6 +36,16 @@ jobs:
       run: |
         python ./src/utils/update_token_config.py
 
-    - name: Run tests with Pytest
+    - name: Run tests with Pytest and generate report
       run: |
-        python -m pytest -v
+        mkdir -p test-results
+        python -m pytest -v --html=test-results/report.html --self-contained-html
+
+    - name: Upload test results as artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-report
+        path: test-results/report.html
+
+      
