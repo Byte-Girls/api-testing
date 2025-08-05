@@ -46,8 +46,6 @@ def test_BYT_T9_crear_una_categoria_con_nombre_valido(category_url, header):
   assert response["name"] == expected_name
   
  
- 
-@pytest.mark.smoke
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -67,7 +65,7 @@ def test_BYT_T14_crear_una_categoria_con_el_campo_nombre_como_numero(category_ur
   logger.info("domain: %s", category_url)
   assert response.status_code == 400  
 
-@pytest.mark.smoke
+
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -87,7 +85,7 @@ def test_BYT_T12_crear_una_categoria_con_caracteres_especiales_en_el_campo_name(
   logger.info("domain: %s", category_url)
   assert response.status_code == 400  
 
-@pytest.mark.smoke
+
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -139,6 +137,7 @@ def test_BYT_T15_Verificar_que_el_JSON_de_respuesta_contenga_los_campos_id_name(
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
+@pytest.mark.valor_limite
 def test_BYT_T13_Crear_una_categoría_con_nombre_mayor_a_50_caracteres(category_url, header):
   """
   Verificar que el sistema no permita crear una categoría de trabajo cuando el valor del 
@@ -155,8 +154,10 @@ def test_BYT_T13_Crear_una_categoría_con_nombre_mayor_a_50_caracteres(category_
   logger.debug("response: %s", response.json())
   logger.info("domain: %s", category_url)
   assert response.status_code == 422
-  
 
+
+@pytest.mark.regression
+@pytest.mark.funcional
 @pytest.mark.negativo
 def test_BYT_T11_Crear_una_categoria_sin_enviar_el_campo_nombre(category_url, header):
   """
@@ -176,6 +177,7 @@ def test_BYT_T11_Crear_una_categoria_sin_enviar_el_campo_nombre(category_url, he
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.positivo
+@pytest.mark.valor_limite
 def test_BYT_T19_Crear_una_categoría_con_exactamente_50_caracteres(category_url, header):
   """
   Verificar que el sistema permita crear una categoría de trabajo cuando el valor del 
@@ -204,6 +206,7 @@ def test_BYT_T19_Crear_una_categoría_con_exactamente_50_caracteres(category_url
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.positivo
+@pytest.mark.valor_limite
 def test_BYT_T20_Crear_categoria_con_1_caracter(category_url, header):
   """
   Verificar que el sistema permita crear una categoría de trabajo cuando el valor 
@@ -257,6 +260,7 @@ def test_BYT_T18_Verificar_tiempo_de_respuesta_menor_a_2s_al_crear_categoria(cat
   eliminar_categoria(category_url,header,response_data)
 
 
+@pytest.mark.smoke
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.positivo
@@ -298,3 +302,5 @@ def eliminar_categoria(category_url,header,response):
         "ids": [category_id]
   })
   response = requests.delete(category_url, headers=header,data=payload)
+
+  
