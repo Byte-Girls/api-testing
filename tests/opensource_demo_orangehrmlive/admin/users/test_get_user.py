@@ -198,7 +198,7 @@ def test_BYT_T28_solicitud_sin_autenticacion_devuelve_401_unauthorized(user_url,
     assert_resource_response_schema(response, "error_message_schema_response.json")
     # Logging information
     logger.info("domain: %s", user_url)
-    logger.debug("request+headers: GET %s %s", user_url)
+    logger.debug("request: GET %s", user_url)
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
 
@@ -221,7 +221,7 @@ def test_BYT_T59_solicitud_con_token_invalido_devuelve_401_unauthorized(user_url
     assert_resource_response_schema(response, "error_message_schema_response.json")
     # Logging information
     logger.info("domain: %s", user_url)
-    logger.debug("request+headers: GET %s %s", user_url)
+    logger.debug("request: GET %s", user_url)
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
 
