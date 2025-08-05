@@ -2,6 +2,9 @@ import json
 import random
 import requests
 import pytest
+import logging
+
+logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="module")
 def user(user_url, header):
@@ -14,6 +17,7 @@ def user(user_url, header):
     })
 
     response = requests.post(user_url, headers=header, data=payload)
+    logger.debug("response: %s", response.json())
     assert response.status_code == 200
     yield response.json()["data"]
     delete_user(user_url, header, response.json()["data"]["id"])
@@ -42,3 +46,21 @@ def delete_user(user_url, header, user_id):
     response = requests.delete(user_url, headers=header, data=payload)
     assert response.status_code == 200
 
+def create_employee(get_url, header):
+    payload = json.dumps({
+        "lastName": "test create new employee",
+        "firstName": "test"
+    })
+
+    response = requests.delete(get_url, headers=header, data=payload)
+    assert response.status_code == 200
+
+def delete_employee(get_url, header, employee_id):
+    payload = json.dumps({
+        "ids": [employee_id]
+    })
+
+    response = requests.delete(get_url, headers=header, data=payload)
+    assert response.status_code == 200
+
+    
