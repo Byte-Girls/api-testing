@@ -98,6 +98,7 @@ def test_BYT_T89_Obtener_categoria_con_id_cero(category_url, header):
   
 @pytest.mark.regression
 @pytest.mark.funcional
+@pytest.mark.negativo
 @pytest.mark.xfail(reason="Known Issue. BYT-57: Al buscar una categoría con decimal la API interpreta ID decimal como entero", run=False)
 def test_BYT_T90_Obtener_categoria_con_id_decimal_interpreta_como_entero(category_url, header):
   """
@@ -114,6 +115,7 @@ def test_BYT_T90_Obtener_categoria_con_id_decimal_interpreta_como_entero(categor
   
 @pytest.mark.regression
 @pytest.mark.funcional 
+@pytest.mark.negativo
 def test_BYT_T3_Obtener_una_categoria_con_id_inexistente(category_url, header):
   """
   Descripción: Verificar que el sistema responda adecuadamente cuando se intenta obtener 
@@ -131,6 +133,7 @@ def test_BYT_T3_Obtener_una_categoria_con_id_inexistente(category_url, header):
 
 @pytest.mark.regression
 @pytest.mark.funcional
+@pytest.mark.rendimiento
 def test_BYT_T8_Tiempo_de_respuesta_al_obtener_categoria(category_url, header,category):
   """
   Descripción: Verificar que el tiempo de respuesta al consultar una categoría de trabajo 
@@ -150,7 +153,7 @@ def test_BYT_T8_Tiempo_de_respuesta_al_obtener_categoria(category_url, header,ca
   logger.info("status code: %s", response.status_code)
   logger.debug("response: %s", response.json())
   
-
+@pytest.mark.smoke
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.positivo
@@ -172,4 +175,5 @@ def test_BYT_T7_Verificar_campos_id_y_name_en_respuesta(category_url, header,cat
   logger.debug("GET URL: %s", url)
   logger.info("status code: %s", response.status_code)
   logger.debug("response: %s", response.json())
+
   
