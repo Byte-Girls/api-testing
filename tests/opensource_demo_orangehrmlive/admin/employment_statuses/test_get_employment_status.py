@@ -39,6 +39,7 @@ def test_BYT_T42_obtener_informacion_de_un_estado_con_ID_de_letras(statuses_url,
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
     
+@pytest.mark.seguridad
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T43_obtener_informacion_de_un_estado_con_token_invalido(statuses_url):
