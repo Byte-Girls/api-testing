@@ -1,0 +1,6 @@
+pytest-html
+requests>=2.31.0
+pytest>=8.4.0
+jsonschema
+beautifulsoup4
+
