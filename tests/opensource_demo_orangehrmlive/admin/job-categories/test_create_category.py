@@ -1,9 +1,11 @@
+import logging
 import random
 import string
 import requests
 import json
 import pytest
 from src.assertions.common_assertions import *
+logger = logging.getLogger(__name__) # Crear instancia del logger
 
 @pytest.mark.smoke
 @pytest.mark.regression
@@ -19,17 +21,31 @@ def test_BYT_T9_crear_una_categoria_con_nombre_valido(category_url, header):
     "name": expected_name
   })
 
+  logger.debug("Payload enviado: %s", payload)
+
   response = requests.post(category_url, headers=header, data=payload)
+  
+  logger.info("status code: %s", response.status_code)
+  logger.debug("response: %s", response.json())
+
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
   response = response.json()["data"]
   assert response["name"] == expected_name
   # Validación con el get
   url = f"{category_url}/{response['id']}" 
+  logger.debug("GET URL: %s", url)
+
   response = requests.get(url, headers=header)
+  logger.info("GET status code: %s", response.status_code)
+  logger.debug("GET response: %s", response.json())
+  logger.info("domain: %s", category_url)
+
   assert response.status_code == 200
   response = response.json()["data"]
   assert response["name"] == expected_name
+  
+ 
  
 @pytest.mark.smoke
 @pytest.mark.regression
@@ -43,8 +59,12 @@ def test_BYT_T14_crear_una_categoria_con_el_campo_nombre_como_numero(category_ur
   payload = json.dumps({
     "name": "78945"
   })
+  logger.debug("Payload enviado: %s", payload)
 
   response = requests.post(category_url, headers=header, data=payload)
+  logger.info("status code: %s", response.status_code)
+  logger.debug("response: %s", response.json())
+  logger.info("domain: %s", category_url)
   assert response.status_code == 400  
 
 @pytest.mark.smoke
@@ -59,8 +79,12 @@ def test_BYT_T12_crear_una_categoria_con_caracteres_especiales_en_el_campo_name(
   payload = json.dumps({
     "name": "  #$%()*| "
   })
+  logger.debug("Payload enviado: %s", payload)
 
   response = requests.post(category_url, headers=header, data=payload)
+  logger.info("status code: %s", response.status_code)
+  logger.debug("response: %s", response.json())
+  logger.info("domain: %s", category_url)
   assert response.status_code == 400  
 
 @pytest.mark.smoke
@@ -75,11 +99,16 @@ def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(category_url, header):
   payload = json.dumps({
     "name": "Administrador"
   })
+  logger.debug("Payload enviado: %s", payload)
 
   #Primera creación 
-  requests.post(category_url, headers=header, data=payload)
+  response1=requests.post(category_url, headers=header, data=payload)
+  logger.info("Primera creación - status code: %s", response1.status_code)
   #Segunda creación con nombre duplicado
   response = requests.post(category_url, headers=header, data=payload)
+  logger.info("Segunda creación - status code: %s", response.status_code)
+  logger.debug("Segunda creación - response: %s", response.json())
+  logger.info("domain: %s", category_url)
   assert response.status_code == 422
   
 
@@ -95,8 +124,13 @@ def test_BYT_T15_Verificar_que_el_JSON_de_respuesta_contenga_los_campos_id_name(
   payload = json.dumps({
     "name": expected_name
   })
+  logger.debug("Payload enviado: %s", payload)
   
   response = requests.post(category_url, headers=header, data=payload)
+  logger.info("status code: %s", response.status_code)
+  logger.debug("response: %s", response.json())
+  logger.info("domain: %s", category_url)
+
   assert_resource_response_schema(response, "category_schema_response.json")
   assert response.status_code == 200  
   response_data = response.json()["data"]
@@ -114,8 +148,12 @@ def test_BYT_T13_Crear_una_categoría_con_nombre_mayor_a_50_caracteres(category_
   payload = json.dumps({
     "name": name_with_more_than_50_characters
   })
+  logger.debug("Payload enviado: %s", payload)
   
   response = requests.post(category_url, headers=header, data=payload)
+  logger.info("status code: %s", response.status_code)
+  logger.debug("response: %s", response.json())
+  logger.info("domain: %s", category_url)
   assert response.status_code == 422
   
 
@@ -126,8 +164,12 @@ def test_BYT_T11_Crear_una_categoria_sin_enviar_el_campo_nombre(category_url, he
   Enviar una solicitud POST al endpoint /admin/job-categories con el cuerpo vacío {}.
   """
   payload = json.dumps({})
+  logger.debug("Payload enviado: %s", payload)
 
   response = requests.post(category_url, headers=header, data=payload)
+  logger.info("status code: %s", response.status_code)
+  logger.debug("response: %s", response.json())
+  logger.info("domain: %s", category_url)
   assert response.status_code == 422
   assert_resource_response_schema(response, "error_422_schema_response.json")
 
@@ -144,12 +186,19 @@ def test_BYT_T19_Crear_una_categoría_con_exactamente_50_caracteres(category_url
   payload = json.dumps({
     "name": name_with_50_characters
   })
+  logger.debug("Payload enviado: %s", payload)
   
   response = requests.post(category_url, headers=header, data=payload)
+  logger.info("status code: %s", response.status_code)
+  logger.debug("response: %s", response.json())
+  logger.info("domain: %s", category_url)
+
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
   response = response.json()["data"]
   assert response["name"] == name_with_50_characters  
+  eliminar_categoria(category_url,header,response)
+  
 
 
 @pytest.mark.regression
@@ -162,18 +211,26 @@ def test_BYT_T20_Crear_categoria_con_1_caracter(category_url, header):
   """
   letter_one_character = random.choice(string.ascii_letters)
   name_with_1_character = letter_one_character
+  logger.debug(f"Letra generada para el nombre: {letter_one_character}")
   payload = json.dumps({
     "name": name_with_1_character
   })
 
+  logger.debug(f"Payload enviado: {payload}")
   response = requests.post(category_url, headers=header, data=payload)
+  logger.info("status code: %s", response.status_code)
+  logger.debug("response: %s", response.json())
+  logger.info("domain: %s", category_url)
+
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
   response = response.json()["data"]
   assert response["name"] == name_with_1_character
+  eliminar_categoria(category_url,header,response)
 
 @pytest.mark.regression
 @pytest.mark.funcional
+@pytest.mark.rendimiento
 def test_BYT_T18_Verificar_tiempo_de_respuesta_menor_a_2s_al_crear_categoria(category_url, header):
   """
   Verificar que el tiempo de respuesta al crear una categoría de trabajo sea menor a 2 segundos.
@@ -182,14 +239,22 @@ def test_BYT_T18_Verificar_tiempo_de_respuesta_menor_a_2s_al_crear_categoria(cat
   payload = json.dumps({
     "name": name_for_timing
   })
+  logger.debug("Payload enviado: %s", payload)
 
   response = requests.post(category_url, headers=header, data=payload)
+  response_time = response.elapsed.total_seconds()
+  logger.info("status code: %s", response.status_code)
+  logger.info("Tiempo de respuesta: %.4f segundos", response_time)
+  logger.debug("response: %s", response.json())
+  logger.info("domain: %s", category_url)
+
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
   response_data = response.json()["data"]
   assert response_data["name"] == name_for_timing
   # Validar tiempo de respuesta menor a 2 segundos
   assert response.elapsed.total_seconds() < 2, f"Tiempo de respuesta excedido: {response.elapsed.total_seconds()}s"
+  eliminar_categoria(category_url,header,response_data)
 
 
 @pytest.mark.regression
@@ -204,18 +269,32 @@ def test_BYT_T17_Categoria_creada_aparece_en_listado(category_url, header):
   payload = json.dumps({
     "name": unique_name
   })
+  logger.debug("Payload enviado: %s", payload)
+  logger.info("domain: %s", category_url)
 
   # Crear la categoría
   response = requests.post(category_url, headers=header, data=payload)
+  logger.info("POST status code: %s", response.status_code)
+  logger.debug("POST response: %s", response.json())
+  
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
   created_data = response.json()["data"]
   assert created_data["name"] == unique_name
   # Obtener listado de categorías
   response = requests.get(category_url, headers=header)
+  logger.info("GET status code: %s", response.status_code)
+  logger.debug("GET response: %s", response.json())
   assert response.status_code == 200
   response = response.json()["data"]
   # Validar que la categoría creada esté en el listado
   category_names = [item["name"] for item in response]
   assert unique_name in category_names
 
+def eliminar_categoria(category_url,header,response):
+  #teardown 
+  category_id = response["id"] 
+  payload = json.dumps({
+        "ids": [category_id]
+  })
+  response = requests.delete(category_url, headers=header,data=payload)
