@@ -2,11 +2,13 @@ import json
 import random
 import pytest
 import requests
+import logging
 from src.assertions.common_assertions import *
 
+logger = logging.getLogger(__name__)
+
 @pytest.mark.smoke
-@pytest.mark.xfail(reason="TODO: BYT-47 Pending to add precondition, empNumber not always is 104", run=False)
-def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header):
+def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con datos válidos devuelva un código de estado HTTP 200 OK.
     """
@@ -15,7 +17,7 @@ def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header):
         "password": "$435sdf35REWfs",
         "username": "carousernametest" + str(random.randint(1000, 9999)),
         "userRoleId": 1,
-        "empNumber": "104"
+        "empNumber": create_employee["empNumber"]
     })
 
     response = requests.post(user_url, headers=header, data=payload)
@@ -27,7 +29,7 @@ def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header):
     assert expected_payload_dict["status"] == response_data["status"]
     assert expected_payload_dict["username"] == response_data["userName"]
     assert expected_payload_dict["userRoleId"] == response_data["userRole"]["id"]
-    assert expected_payload_dict["empNumber"] == str(response_data["employee"]["empNumber"])
+    assert expected_payload_dict["empNumber"] == response_data["employee"]["empNumber"]
 
     # Validación con el get
     url = f"{user_url}/{response_data['id']}" 
@@ -38,8 +40,13 @@ def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header):
     assert expected_payload_dict["status"] == response_data["status"]
     assert expected_payload_dict["username"] == response_data["userName"]
     assert expected_payload_dict["userRoleId"] == response_data["userRole"]["id"]
-    assert expected_payload_dict["empNumber"] == str(response_data["employee"]["empNumber"])
-
+    assert expected_payload_dict["empNumber"] == response_data["employee"]["empNumber"]
+    # Logging information
+    logger.info("domain: %s", user_url)
+    logger.debug("request+headers: GET %s %s", user_url, header)
+    logger.debug("Payload enviado: %s", payload)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response text: %s", response.text)
 
 
 
