@@ -28,7 +28,6 @@ def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
     #comparación directa con el campo
     expected_payload_dict = json.loads(payload)
     assert response_data["name"] == expected_payload_dict["name"]
-    
     #validación del get
     url = f"{statuses_url}/{response_data['id']}"
     response = requests.get(url, headers=header)
@@ -36,7 +35,13 @@ def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
     response_data = response.json()["data"]
     # comparacion dierecta campo a campo
     assert response_data["name"] == expected_payload_dict["name"]
-
+    id_nombre= response.json()["data"]["id"] 
+    delete_status(statuses_url, header, id_nombre)
+    # Logging informacion
+    logger.info("domain: %s", statuses_url)
+    logger.debug("request+headers: GET %s %s", statuses_url, header)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response: %s", response.json())
 
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -52,7 +57,10 @@ def test_BYT_T38_crear_estado_sin_nombre(statuses_url, header):
     
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 422
-  
+    logger.info("domain: %s", statuses_url)
+    logger.debug("request+headers: GET %s %s", statuses_url, header)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response: %s", response.json())
   
 @pytest.mark.valor_limite
 @pytest.mark.regression
@@ -67,7 +75,10 @@ def test_BYT_T40_crear_estado_con_nombre_de_51_caracteres(statuses_url, header):
         
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 422
-
+    logger.info("domain: %s", statuses_url)
+    logger.debug("request+headers: GET %s %s", statuses_url, header)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response: %s", response.json())
 
 @pytest.mark.valor_limite
 @pytest.mark.regression
@@ -86,7 +97,14 @@ def test_BYT_T47_crear_estado_con_nombre_de_1_caracteres(statuses_url, header):
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 200
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
-
+    id_nombre= response.json()["data"]["id"] 
+    delete_status(statuses_url, header, id_nombre)
+    
+    logger.info("domain: %s", statuses_url)
+    logger.debug("request+headers: GET %s %s", statuses_url, header)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response: %s", response.json())
+    
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -103,6 +121,13 @@ def test_BYT_T85_crear_un_estado_de_empleado_con_nombre_de_numeros(statuses_url,
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 400
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
+    id_nombre= response.json()["data"]["id"] 
+    delete_status(statuses_url, header, id_nombre)
+    
+    logger.info("domain: %s", statuses_url)
+    logger.debug("request+headers: GET %s %s", statuses_url, header)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response: %s", response.json())
     
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -120,7 +145,14 @@ def test_BYT_T86_crear_un_estado_de_empleado_con_caracteres_especiales(statuses_
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 400
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
-
+    id_nombre= response.json()["data"]["id"] 
+    delete_status(statuses_url, header, id_nombre)
+    
+    logger.info("domain: %s", statuses_url)
+    logger.debug("request+headers: GET %s %s", statuses_url, header)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response: %s", response.json())
+    
 @pytest.mark.funcional
 @pytest.mark.positivo
 @pytest.mark.regression
@@ -139,7 +171,14 @@ def test_BYT_T40_crear_un_estado_de_empleado_con_caracteres_de_50_caracteres(sta
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 200
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
-
+    id_nombre= response.json()["data"]["id"] 
+    delete_status(statuses_url, header, id_nombre)
+    
+    logger.info("domain: %s", statuses_url)
+    logger.debug("request+headers: GET %s %s", statuses_url, header)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response: %s", response.json())
+    
 @pytest.mark.funcional
 @pytest.mark.positivo
 @pytest.mark.smoke
@@ -162,7 +201,16 @@ def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
     response_two = requests.post(statuses_url, headers=header, data=payload)
     assert response_two.status_code == 422
     assert_resource_response_schema(response_one, "create_employment_status_schema_response.json")
-
+    id_nombre= response_one.json()["data"]["id"] 
+    delete_status(statuses_url, header, id_nombre)
+    
+    logger.info("domain: %s", statuses_url)
+    logger.debug("request+headers: GET %s %s", statuses_url, header)
+    logger.info("status code: %s", response_one.status_code)
+    logger.debug("response: %s", response_one.json())
+    logger.info("status code: %s", response_two.status_code)
+    logger.debug("response: %s", response_two.json())
+    
 @pytest.mark.funcional
 @pytest.mark.positivo
 @pytest.mark.smoke
@@ -182,7 +230,10 @@ def test_BYT_T39_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
     response = requests.post(statuses_url, headers=headers, data=payload)
     logger.info(f"Código de respuesta: {response.status_code}")
     assert response.status_code == 401
-
+    logger.info("domain: %s", statuses_url)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response: %s", response.json())
+    
 @pytest.mark.funcional
 @pytest.mark.positivo
 @pytest.mark.smoke
@@ -198,4 +249,14 @@ def test_BYT_T92_crear_un_estado_de_empleado_con_el_campo_name_de_espacio(status
     
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 422 
-    
+    logger.info("domain: %s", statuses_url)
+    logger.debug("request+headers: GET %s %s", statuses_url, header)
+    logger.info("status code: %s", response.status_code)
+    logger.debug("response: %s", response.json())
+
+def delete_status(statuses_url, header, id_nombre):
+    payload = json.dumps({
+        "ids": [id_nombre]
+    })
+    response = requests.delete(statuses_url, headers=header, data=payload)
+    assert response.status_code == 200 
