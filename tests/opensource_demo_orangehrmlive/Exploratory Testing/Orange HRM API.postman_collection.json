@@ -1,0 +1,906 @@
+{
+	"info": {
+		"_postman_id": "a5725fe8-74fb-4459-89c4-a6fdb671478c",
+		"name": "Orange HRM API",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31103596",
+		"_collection_link": "https://bytegirls.postman.co/workspace/ByteGirls~4ba72cfd-5203-44c7-845c-b01d3980a723/collection/34547402-a5725fe8-74fb-4459-89c4-a6fdb671478c?action=share&source=collection_link&creator=31103596"
+	},
+	"item": [
+		{
+			"name": "Administración de usuarios",
+			"item": [
+				{
+					"name": "Obtener un usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/59",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"59"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/user/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"user",
+								"1"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Lista de usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Crear un usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": true,\r\n  \"password\": \"$435sdf35REWfs\",\r\n  \"username\": \"carousehjsdsf\",\r\n  \"userRoleId\": 1,\r\n  \"empNumber\": \"104\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar  un usuario",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\":[59]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Validar nombre de usuario unico",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/validation/user-name",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"validation",
+								"user-name"
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categorias de trabajo",
+			"item": [
+				{
+					"name": "Obtener una categoría de trabajo",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "tokenName",
+									"value": "{{token}}",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "playlist-modify-public playlist-modify-private playlist-read-private user-read-private",
+									"type": "string"
+								},
+								{
+									"key": "state",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "fbe1589672b14a98b0941ba1036e534b",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "7ed26abf47dc47afb5aed80c99b8d30c",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "https://accounts.spotify.com/api/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://accounts.spotify.com/authorize",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/job-categories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"job-categories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar una categoría de trabajo",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "scope",
+									"value": "playlist-modify-public playlist-modify-private playlist-read-private user-read-private",
+									"type": "string"
+								},
+								{
+									"key": "state",
+									"value": "",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "fbe1589672b14a98b0941ba1036e534b",
+									"type": "string"
+								},
+								{
+									"key": "clientSecret",
+									"value": "7ed26abf47dc47afb5aed80c99b8d30c",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "https://accounts.spotify.com/api/token",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "https://accounts.spotify.com/authorize",
+									"type": "string"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://oauth.pstmn.io/v1/callback",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v2/admin/job-categories/5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"job-categories",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar todas las categorías de trabajo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/job-categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"job-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear una categoría de trabajo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"AdminismmmAdminismmmAdminismmmAdminismmmAdminismmo\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/job-categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"job-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar categorías de trabajo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"ids\": [7]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/job-categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"job-categories"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "tokenName",
+						"value": "{{token}}",
+						"type": "string"
+					},
+					{
+						"key": "refreshRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "authRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "challengeAlgorithm",
+						"value": "S256",
+						"type": "string"
+					},
+					{
+						"key": "scope",
+						"value": "playlist-modify-public playlist-modify-private playlist-read-private user-read-private",
+						"type": "string"
+					},
+					{
+						"key": "redirect_uri",
+						"value": "https://oauth.pstmn.io/v1/callback",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "authorization_code",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "7ed26abf47dc47afb5aed80c99b8d30c",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "fbe1589672b14a98b0941ba1036e534b",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "https://accounts.spotify.com/authorize",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "https://accounts.spotify.com/api/token",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Estado de empleado",
+			"item": [
+				{
+					"name": "Obtener un estado de empleado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/employment-statuses/5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"employment-statuses",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un estado de empleado",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/employment-statuses/{id}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"employment-statuses",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar todos los estados de empleado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/employment-statuses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"employment-statuses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear un estado de empleado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\": \"Maria\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/employment-statuses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"employment-statuses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar estado de empleado",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/employment-statuses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"employment-statuses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Educación",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/educations/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"educations",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}} /admin/educations/1",
+							"host": [
+								"{{base_url}} "
+							],
+							"path": [
+								"admin",
+								"educations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Empleado",
+			"item": [
+				{
+					"name": "Crear un empleado",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"lastName\": \"testlfirname\",\r\n  \"firstName\": \"sdfsf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pim/employees",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pim",
+								"employees"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar un Empleado",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ids\":[179]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pim/employees",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pim",
+								"employees"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "El Recurso de empleado sirve como precondición para la creación de users"
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "refreshRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "tokenRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "authRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "playlist-modify-public playlist-modify-private playlist-read-private user-read-private",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "https://oauth.pstmn.io/v1/callback",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "7ed26abf47dc47afb5aed80c99b8d30c",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "fbe1589672b14a98b0941ba1036e534b",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://accounts.spotify.com/authorize",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://accounts.spotify.com/api/token",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://opensource-demo.orangehrmlive.com/web/index.php/api/v2"
+		},
+		{
+			"key": "token",
+			"value": "def502001f64fdfdc63165f8f62269dba1e133d0727e6ef8c84b9ce32ca18ee0a9f05f7f63f3704af82ed481dcf76956ea382fabf8b66a5668e94d190071d6d1d2e1eed28ac86645eb6d4b0900efcf6e5da9e9dfd87527a2b2da77019089b3be8a2cc8a8f9ff073f8a64933cc54967ce440462c01142766f071771d19fcd37015cb6de198df5be6ed000fd6ef1408f32641769d8746d3539cd52c8b53c3ea442fafafce0",
+			"type": "string"
+		}
+	]
+}
