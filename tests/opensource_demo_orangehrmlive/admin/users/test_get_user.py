@@ -163,7 +163,7 @@ def test_BYT_T55_obtener_usuario_con_ID_numérico_máximo_inválido_8144_cifras_
     logger.info("domain: %s", user_url)
     logger.debug("request+headers: GET %s %s", user_url, header)
     logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    logger.debug("response text: %s", response.text)
 
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -180,7 +180,7 @@ def test_BYT_T56_obtener_usuario_con_ID_de_8143_cifras_devuelve_403_forbidden(us
     logger.info("domain: %s", user_url)
     logger.debug("request+headers: GET %s %s", user_url, header)
     logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    logger.debug("response text: %s", response.text)
 
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -197,7 +197,7 @@ def test_BYT_T28_solicitud_sin_autenticacion_devuelve_401_unauthorized(user_url,
     assert_resource_response_schema(response, "error_message_schema_response.json")
     # Logging information
     logger.info("domain: %s", user_url)
-    logger.debug("request+headers: GET %s %s", user_url, header)
+    logger.debug("request+headers: GET %s %s", user_url)
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
 
@@ -219,7 +219,7 @@ def test_BYT_T59_solicitud_con_token_invalido_devuelve_401_unauthorized(user_url
     assert_resource_response_schema(response, "error_message_schema_response.json")
     # Logging information
     logger.info("domain: %s", user_url)
-    logger.debug("request+headers: GET %s %s", user_url, header)
+    logger.debug("request+headers: GET %s %s", user_url)
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
 
