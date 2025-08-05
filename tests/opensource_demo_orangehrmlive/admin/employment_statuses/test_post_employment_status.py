@@ -44,6 +44,7 @@ def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
     logger.debug("response: %s", response.json())
 
 @pytest.mark.funcional
+@pytest.mark.valor_limite
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T38_crear_estado_sin_nombre(statuses_url, header):
@@ -62,7 +63,9 @@ def test_BYT_T38_crear_estado_sin_nombre(statuses_url, header):
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
   
+@pytest.mark.funcional
 @pytest.mark.valor_limite
+@pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T40_crear_estado_con_nombre_de_51_caracteres(statuses_url, header):
     """
@@ -80,7 +83,9 @@ def test_BYT_T40_crear_estado_con_nombre_de_51_caracteres(statuses_url, header):
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
 
+@pytest.mark.funcional
 @pytest.mark.valor_limite
+@pytest.mark.positivo
 @pytest.mark.regression
 def test_BYT_T47_crear_estado_con_nombre_de_1_caracteres(statuses_url, header):
     """
@@ -105,7 +110,6 @@ def test_BYT_T47_crear_estado_con_nombre_de_1_caracteres(statuses_url, header):
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
     
-@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 @pytest.mark.xfail(reason="La app permite crear un estado con solo número BYT-51", run=False)
@@ -129,7 +133,6 @@ def test_BYT_T85_crear_un_estado_de_empleado_con_nombre_de_numeros(statuses_url,
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
     
-@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 @pytest.mark.xfail(reason="La app permite crear un estado con solo caracteres especiales BYT-52", run=False)
@@ -154,6 +157,7 @@ def test_BYT_T86_crear_un_estado_de_empleado_con_caracteres_especiales(statuses_
     logger.debug("response: %s", response.json())
     
 @pytest.mark.funcional
+@pytest.mark.valor_limite
 @pytest.mark.positivo
 @pytest.mark.regression
 def test_BYT_T40_crear_un_estado_de_empleado_con_caracteres_de_50_caracteres(statuses_url, header):
@@ -180,7 +184,7 @@ def test_BYT_T40_crear_un_estado_de_empleado_con_caracteres_de_50_caracteres(sta
     logger.debug("response: %s", response.json())
     
 @pytest.mark.funcional
-@pytest.mark.positivo
+@pytest.mark.negativo
 @pytest.mark.smoke
 @pytest.mark.regression
 def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
@@ -211,9 +215,8 @@ def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
     logger.info("status code: %s", response_two.status_code)
     logger.debug("response: %s", response_two.json())
     
-@pytest.mark.funcional
-@pytest.mark.positivo
-@pytest.mark.smoke
+@pytest.mark.seguridad
+@pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T39_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
     """
@@ -234,9 +237,7 @@ def test_BYT_T39_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
     logger.info("status code: %s", response.status_code)
     logger.debug("response: %s", response.json())
     
-@pytest.mark.funcional
-@pytest.mark.positivo
-@pytest.mark.smoke
+@pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T92_crear_un_estado_de_empleado_con_el_campo_name_de_espacio(statuses_url, header):
     """
@@ -260,3 +261,4 @@ def delete_status(statuses_url, header, id_nombre):
     })
     response = requests.delete(statuses_url, headers=header, data=payload)
     assert response.status_code == 200 
+    
