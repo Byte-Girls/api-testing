@@ -186,6 +186,7 @@ def test_BYT_T56_obtener_usuario_con_ID_de_8143_cifras_devuelve_403_forbidden(us
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.smoke
+@pytest.mark.seguridad
 def test_BYT_T28_solicitud_sin_autenticacion_devuelve_401_unauthorized(user_url, user):
     """
     Descripción: Verifica que una solicitud sin encabezado de autenticación devuelva un código 401 Unauthorized.
@@ -204,6 +205,7 @@ def test_BYT_T28_solicitud_sin_autenticacion_devuelve_401_unauthorized(user_url,
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
+@pytest.mark.seguridad
 @pytest.mark.xfail(reason="Known Issue. BYT-49: API get user se queda estancada con token inválido — no responde ni devuelve error", run=False)
 def test_BYT_T59_solicitud_con_token_invalido_devuelve_401_unauthorized(user_url, user):
     """
