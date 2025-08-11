@@ -1,9 +1,12 @@
+import logging
 from venv import logger
 import requests
 import json
 import pytest
 import time
 from src.assertions.common_assertions import *
+logger = logging.getLogger(__name__) # Crear instancia del logger
+
 
 @pytest.mark.smoke
 @pytest.mark.regression
@@ -176,4 +179,54 @@ def test_BYT_T7_Verificar_campos_id_y_name_en_respuesta(category_url, header,cat
   logger.info("status code: %s", response.status_code)
   logger.debug("response: %s", response.json())
 
-  
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+def test_BYT_T6_Obtener_categoria_con_token_invalido(category_url):
+    """
+    Descripción: Verificar que el sistema rechace la solicitud de obtener una categoría con token inválido.
+    """
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer invalid_or_expired_token'
+    }
+    url = f"{category_url}/1"
+
+    logger.info("domain: %s", category_url)
+    logger.debug("GET URL: %s", url)
+
+    response = requests.get(url, headers=headers)
+
+    logger.info("status code: %s", response.status_code)
+    try:
+        logger.debug("response: %s", response.json())
+    except ValueError:
+        logger.debug("response no es JSON: %s", response.text)
+
+    assert response.status_code == 401, \
+        f"Se esperaba 401 , pero se recibió {response.status_code}"
+
+
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+def test_BYT_T5_Obtener_categoria_sin_autenticacion(category_url):
+    """
+    Descripción: Verificar que el sistema rechace la solicitud de obtener una categoría de trabajo 
+    cuando no se envía el token de autenticación.
+    """
+    url = f"{category_url}/1"  # ID válido
+
+    logger.info("domain: %s", category_url)
+    logger.debug("GET URL: %s", url)
+
+    response = requests.get(url)  # No se envía el header de autenticación
+
+    logger.info("status code: %s", response.status_code)
+    try:
+        logger.debug("response: %s", response.json())
+    except ValueError:
+        logger.debug("response no es JSON: %s", response.text)
+
+    assert response.status_code == 401, \
+        f"Se esperaba 401 pero se recibió {response.status_code}"
