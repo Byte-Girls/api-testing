@@ -6,6 +6,9 @@ from src.assertions.common_assertions import *
 from src.utils.loggers_helpers import log_request_response
 
 @pytest.mark.smoke
+@pytest.mark.funcional
+@pytest.mark.positivo
+@pytest.mark.regression
 def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con datos válidos devuelva un código de estado HTTP 200 OK.
@@ -44,6 +47,8 @@ def test_BYT_T30_crear_usuario_con_datos_validos(user_url, header, create_employ
 
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 @pytest.mark.xfail(reason="Known Issue. BYT-80: Intentar crear un usuario con nombre duplicado devuelve 422 en ves de 409", run=False)
 def test_BYT_T33_crear_usuario_username_existente_devuelve_409(user_url, header, create_employee, user):
     """
@@ -62,6 +67,10 @@ def test_BYT_T33_crear_usuario_username_existente_devuelve_409(user_url, header,
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.smoke
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
+@pytest.mark.seguridad
 def test_BYT_T34_crear_usuario_sin_autenticacion_devuelve_401(user_url):
     """
     Descripción: Verifica que la creación de un usuario sin autenticación devuelva un código de estado HTTP 401 Unauthorized.
@@ -78,6 +87,8 @@ def test_BYT_T34_crear_usuario_sin_autenticacion_devuelve_401(user_url):
     log_request_response(user_url, response, None, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 @pytest.mark.xfail(reason="Known Issue. BYT-81: Intentar crear un usuario con un rol Id inexistente devuelve 500 en ves de 422", run=False)
 def test_BYT_T61_crear_usuario_con_userRoleId_inexistente_devuelve_422(user_url, header, create_employee):
     """
@@ -95,6 +106,8 @@ def test_BYT_T61_crear_usuario_con_userRoleId_inexistente_devuelve_422(user_url,
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T62_crear_usuario_con_empNumber_inexistente_devuelve_422(user_url, header):
     """
     Descripción: Verifica que la creación de un usuario con numero de empleado inexistente devuelva un código de estado HTTP 422 Unprocessable Content.
@@ -111,6 +124,9 @@ def test_BYT_T62_crear_usuario_con_empNumber_inexistente_devuelve_422(user_url, 
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.smoke
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T63_crear_usuario_sin_username_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario sin username devuelva un código de estado HTTP 422 Unprocessable Content.
@@ -126,6 +142,7 @@ def test_BYT_T63_crear_usuario_sin_username_devuelve_422(user_url, header, creat
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
 def test_BYT_T64_crear_usuario_sin_password_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario sin password devuelva un código de estado HTTP 422 Unprocessable Content.
@@ -140,7 +157,9 @@ def test_BYT_T64_crear_usuario_sin_password_devuelve_422(user_url, header, creat
     assert response.status_code == 422
     log_request_response(user_url, response, header, payload)
 
-@pytest.mark.smoke
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T65_crear_usuario_sin_userRoleId_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario sin userRole ID devuelva un código de estado HTTP 422 Unprocessable Content.
@@ -156,6 +175,8 @@ def test_BYT_T65_crear_usuario_sin_userRoleId_devuelve_422(user_url, header, cre
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T66_crear_usuario_sin_empNumber_devuelve_422(user_url, header):
     """
     Descripción: Verifica que la creación de un usuario sin numero de empleado devuelva un código de estado HTTP 422 Unprocessable Content.
@@ -171,6 +192,8 @@ def test_BYT_T66_crear_usuario_sin_empNumber_devuelve_422(user_url, header):
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T67_crear_usuario_username_menor_5_caracteres_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con username menos a 5 caracteres devuelva un código de estado HTTP 422 Unprocessable Content.
@@ -187,6 +210,8 @@ def test_BYT_T67_crear_usuario_username_menor_5_caracteres_devuelve_422(user_url
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T68_crear_usuario_username_mayor_40_caracteres_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con username mayor a 40 caracteres devuelva un código de estado HTTP 422 Unprocessable Content.
@@ -203,6 +228,8 @@ def test_BYT_T68_crear_usuario_username_mayor_40_caracteres_devuelve_422(user_ur
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T69_crear_usuario_con_campo_no_permitido_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con useraname invalido por ejemplo numeros o valores booleanos
@@ -221,6 +248,8 @@ def test_BYT_T69_crear_usuario_con_campo_no_permitido_devuelve_422(user_url, hea
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T70_crear_usuario_status_no_booleano_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con status diffente a un valor booleano
@@ -238,6 +267,8 @@ def test_BYT_T70_crear_usuario_status_no_booleano_devuelve_422(user_url, header,
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.positivo
+@pytest.mark.regression
 def test_BYT_T71_crear_usuario_username_con_espacios_devuelve_200(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con username que contiene espacios devuelve 200 OK.
@@ -278,6 +309,8 @@ def test_BYT_T71_crear_usuario_username_con_espacios_devuelve_200(user_url, head
 
 
 @pytest.mark.funcional
+@pytest.mark.positivo
+@pytest.mark.regression
 def test_BYT_T73_crear_usuario_username_mayusculas_devuelve_200(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con username en mayúsculas devuelve 200 OK.
@@ -317,6 +350,8 @@ def test_BYT_T73_crear_usuario_username_mayusculas_devuelve_200(user_url, header
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T74_crear_usuario_sin_status_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario sin status
@@ -333,6 +368,8 @@ def test_BYT_T74_crear_usuario_sin_status_devuelve_422(user_url, header, create_
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T75_crear_usuario_empNumber_vacio_devuelve_422(user_url, header):
     """
     Descripción: Verifica que la creación de un usuario con numero de empleado vacio ""
@@ -350,6 +387,8 @@ def test_BYT_T75_crear_usuario_empNumber_vacio_devuelve_422(user_url, header):
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T76_crear_usuario_userRoleId_vacio_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con userRole Id vacio ""
@@ -367,6 +406,8 @@ def test_BYT_T76_crear_usuario_userRoleId_vacio_devuelve_422(user_url, header, c
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T77_crear_usuario_password_invalido_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con password invalido 
@@ -385,6 +426,8 @@ def test_BYT_T77_crear_usuario_password_invalido_devuelve_422(user_url, header, 
     log_request_response(user_url, response, header, payload)
 
 @pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
 def test_BYT_T78_crear_usuario_payload_vacio_devuelve_422(user_url, header):
     """
     Descripción: Verifica que la creación de un usuario con body vacio {}
