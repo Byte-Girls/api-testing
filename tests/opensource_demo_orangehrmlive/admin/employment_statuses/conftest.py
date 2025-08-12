@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def employment_tastus_create(statuses_url, header, get_url):
     
     payload = json.dumps({
-        "name": "For" 
+        "name" : "Calani" + str(random.randint(1000, 9999))
     })
 
     response = requests.post(statuses_url, headers=header, data=payload)
