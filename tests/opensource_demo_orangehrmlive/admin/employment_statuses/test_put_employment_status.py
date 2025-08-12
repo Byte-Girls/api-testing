@@ -5,7 +5,7 @@ import requests
 import string
 import logging
 from src.assertions.common_assertions import * 
-logger = logging.getLogger(__name__) # Crear instancia del logger
+from src.utils.loggers_helpers import log_request_response
 
 @pytest.mark.smoke
 @pytest.mark.funcional
@@ -26,10 +26,7 @@ def test_BYT_T101_Actualizar_un_estado_de_empleado_y_guardar_con_nombre_valido(s
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 200
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: PUT %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(url, response, header, payload)
 
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -50,11 +47,8 @@ def test_BYT_T102_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_con_puro_c
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 400
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: PUT %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
-
+    log_request_response(url, response, header, payload)
+    
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -74,10 +68,7 @@ def test_BYT_T103_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_puro_nÃ
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 400
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: PUT %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json()) 
+    log_request_response(url, response, header, payload)
     
 @pytest.mark.smoke
 @pytest.mark.funcional
@@ -97,10 +88,7 @@ def test_BYT_T104_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_vacio(stat
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 422
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: PUT %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(url, response, header, payload)
     
 @pytest.mark.funcional
 @pytest.mark.positivo
@@ -121,10 +109,7 @@ def test_BYT_T105_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_50_cara
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 200
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: PUT %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(url, response, header, payload)
     
 @pytest.mark.funcional
 @pytest.mark.positivo
@@ -145,10 +130,7 @@ def test_BYT_T106_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_1_carac
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 200
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: PUT %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(url, response, header, payload)
 
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -169,10 +151,7 @@ def test_BYT_T107_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_51_cara
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 422
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: PUT %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())    
+    log_request_response(url, response, header, payload)  
 
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -191,7 +170,4 @@ def test_BYT_T108_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_solo_es
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 422
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: PUT %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(url, response, header, payload)
