@@ -10,11 +10,11 @@ logger = logging.getLogger(__name__) # Crear instancia del logger
 @pytest.mark.smoke
 @pytest.mark.positivo
 @pytest.mark.regression
-def test_BYT_T79_obtener_informacion_de_un_estado_de_empleado(statuses_url, header,employment_tastus_create):
+def test_BYT_T79_obtener_informacion_de_un_estado_de_empleado(statuses_url, header,employment_status_create):
     """
     Descripción: El Admin debe poder obtener información de un estado de empleado en específico
     """
-    id_status=employment_tastus_create["id"]
+    id_status=employment_status_create["id"]
     url = f"{statuses_url}/{id_status}"
     response = requests.get(url, headers=header)
     assert response.status_code == 200
