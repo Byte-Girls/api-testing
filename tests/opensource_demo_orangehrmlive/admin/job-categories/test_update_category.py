@@ -13,7 +13,7 @@ def test_BYT_T24_actualizar_categoria_existente_devuelve_200(category_url, heade
     Descripción: Verifica que la actualización de una categoría de trabajo existente
     devuelva un código de estado HTTP 200 OK y que el nombre de la categoría se actualice correctamente.
     """
-    category_id =category["id"]
+    category_id  = categoría [ "id" ] 
     updated_name = "Supervisores"
 
     payload = json.dumps({
