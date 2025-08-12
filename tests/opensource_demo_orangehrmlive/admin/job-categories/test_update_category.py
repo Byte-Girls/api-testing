@@ -1,7 +1,6 @@
 import time
 import pytest
 import json
-import random
 import requests
 from src.utils.loggers_helpers import log_request_response
 
@@ -104,7 +103,6 @@ def test_BYT_T174_actualizar_categoria_con_name_vacio(category_url, header,categ
     log_request_response(url, response, header, payload)
 
 
-
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -127,8 +125,6 @@ def test_BYT_T25_actualizar_categoria_sin_name_en_body(category_url, header,cate
     assert "name" in body.get("error", {}).get("data", {}).get("invalidParamKeys", [])
 
     log_request_response(url, response, header, payload)
-
-
 
 
 @pytest.mark.smoke
@@ -212,4 +208,127 @@ def test_BYT_T23_Tiempo_de_respuesta_al_actualizar_categoria(category_url, heade
 
     log_request_response(url, response, header, payload)
 
+
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.xfail(reason="Known Issue. BYT-85: Se permite actualizar una categoría con caracteres especiales en el nombre", run=False)
+def test_BYT_T181_actualizar_categoria_con_caracteres_especiales(category_url, header,category):
+    """
+    Descripción: Verifica que al intentar actualizar una categoría con caracteres especiales en el nombre,
+    se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    """
+    valid_id = category["id"] 
+    url = f"{category_url}/{valid_id}"
+
+    payload = json.dumps({"name": "@#$%()"})
+    response = requests.put(url, headers=header, data=payload)
+
+    # Validaciones
+    assert response.status_code == 422
+    body = response.json()
+    assert body.get("error", {}).get("status") == "422"
+    assert body.get("error", {}).get("message") == "Invalid Parameter"
+    assert "name" in body.get("error", {}).get("data", {}).get("invalidParamKeys", [])
+
+    log_request_response(url, response, header, payload)
+
+
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.xfail(reason="Known Issue. BYT-84: La API permite actualizar una categoría con un ID decimal ", run=False)
+def test_BYT_T182_actualizar_categoria_con_id_decimal(category_url, header):
+    """
+    Descripción: Verifica que al intentar actualizar una categoría con un ID decimal,
+    se reciba un código de estado HTTP 422 Unprocessable Content 
+    """
+    category_id = "2.5"
+    url = f"{category_url}/{category_id}"
+
+    payload = json.dumps({"name": "Freelance"})
+    response = requests.put(url, headers=header, data=payload)
+
+    # Validaciones
+    assert response.status_code == 422 
+    body = response.json()
+    assert body.get("error", {}).get("status") == "422"  
+    assert body.get("error", {}).get("message") == "Invalid Parameter"  
+    assert "id" in body.get("error", {}).get("data", {}).get("invalidParamKeys", []) 
+    log_request_response(url, response, header, payload)
+
+
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+def test_BYT_T183_actualizar_categoria_con_id_cero(category_url, header):
+    """
+    Descripción: Verifica que al intentar actualizar una categoría con un ID igual a 0,
+    se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    """
+    invalid_id = 0
+    url = f"{category_url}/{invalid_id}"
+
+    payload = json.dumps({"name": "Supervisores Actualizados"})
     
+    response = requests.put(url, headers=header, data=payload)
+
+    # Validaciones
+    assert response.status_code == 422  
+    body = response.json()
+    assert body.get("error", {}).get("status") == "422" 
+    assert body.get("error", {}).get("message") == "Invalid Parameter" 
+    assert "id" in body.get("error", {}).get("data", {}).get("invalidParamKeys", []) 
+
+    log_request_response(url, response, header, payload)
+
+
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+def test_BYT_T186_actualizar_categoria_con_id_alfanumerico(category_url, header):
+    """
+    Descripción: Verifica que al intentar actualizar una categoría con un ID alfanumérico,
+    se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    """
+    alphanumeric_id = "abcdar" 
+    url = f"{category_url}/{alphanumeric_id}"
+
+    payload = json.dumps({"name": "Freelance"})
+    
+    response = requests.put(url, headers=header, data=payload)
+
+    # Validaciones
+    assert response.status_code == 422  
+    body = response.json()
+    assert body.get("error", {}).get("status") == "422"  
+    assert body.get("error", {}).get("message") == "Invalid Parameter"  
+    assert "id" in body.get("error", {}).get("data", {}).get("invalidParamKeys", []) 
+
+    log_request_response(url, response, header, payload)
+
+
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+def test_BYT_T187_actualizar_categoria_con_id_con_caracteres_especiales(category_url, header):
+    """
+    Descripción: Verifica que al intentar actualizar una categoría con un ID que contiene caracteres especiales,
+    se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    """
+    invalid_id = "@#%&*"
+    url = f"{category_url}/{invalid_id}"
+
+    payload = json.dumps({"name": "Freelance"})
+    
+    response = requests.put(url, headers=header, data=payload)
+
+    # Validaciones
+    assert response.status_code == 422  
+    body = response.json()
+    assert body.get("error", {}).get("status") == "422"  
+    assert body.get("error", {}).get("message") == "Invalid Parameter"  
+    assert "id" in body.get("error", {}).get("data", {}).get("invalidParamKeys", [])  
+
+    log_request_response(url, response, header, payload)
+
