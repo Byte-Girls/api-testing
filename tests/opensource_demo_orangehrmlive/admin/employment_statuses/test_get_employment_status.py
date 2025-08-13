@@ -6,6 +6,7 @@ import json
 from src.assertions.common_assertions import *
 from src.utils.loggers_helpers import log_request_response
 
+@pytest.mark.funcional
 @pytest.mark.smoke
 @pytest.mark.positivo
 @pytest.mark.regression
@@ -19,6 +20,7 @@ def test_BYT_T79_obtener_informacion_de_un_estado_de_empleado(statuses_url, head
     assert response.status_code == 200
     log_request_response(statuses_url, response, header, None)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T42_obtener_informacion_de_un_estado_con_ID_de_letras(statuses_url, header):
@@ -31,6 +33,7 @@ def test_BYT_T42_obtener_informacion_de_un_estado_con_ID_de_letras(statuses_url,
     assert response.status_code == 422
     log_request_response(statuses_url, response, header, None)
     
+@pytest.mark.funcional
 @pytest.mark.seguridad
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -49,6 +52,7 @@ def test_BYT_T43_obtener_informacion_de_un_estado_con_token_invalido(statuses_ur
     assert response.status_code == 401
     log_request_response(statuses_url, response, None, None)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T44_obtener_informacion_de_un_estado_con_caracteres_especiales(statuses_url, header):
@@ -62,6 +66,7 @@ def test_BYT_T44_obtener_informacion_de_un_estado_con_caracteres_especiales(stat
     assert response.status_code == 422
     log_request_response(statuses_url, response, header, None)
 
+@pytest.mark.funcional
 @pytest.mark.seguridad
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -78,6 +83,7 @@ def test_BYT_T46_obtener_informacion_del_estado_sin_token_de_autorizacion(status
     assert response.status_code == 401
     log_request_response(statuses_url, response, None, None)
 
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T80_obtener_informacion_del_estado_con_id_0(statuses_url, header):
@@ -90,6 +96,7 @@ def test_BYT_T80_obtener_informacion_del_estado_con_id_0(statuses_url, header):
     assert response.status_code == 422
     log_request_response(statuses_url, response, header, None)
 
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T81_obtener_informacion_del_estado_con_nombre_del_id(statuses_url, header):
@@ -111,6 +118,7 @@ def test_BYT_T81_obtener_informacion_del_estado_con_nombre_del_id(statuses_url, 
     assert response.status_code == 422
     log_request_response(statuses_url, response, header, None)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T84_obtener_informacion_del_estado_con_ID_inexistente(statuses_url, header):
@@ -125,6 +133,7 @@ def test_BYT_T84_obtener_informacion_del_estado_con_ID_inexistente(statuses_url,
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(statuses_url, response, header, None)
 
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T82_obtener_informacion_del_estado_sin_mandar_el_ID(statuses_url, header):
@@ -138,6 +147,7 @@ def test_BYT_T82_obtener_informacion_del_estado_sin_mandar_el_ID(statuses_url, h
     #assert_resource_response_schema(response, "error_404_schema_response.json")
     #log_request_response(statuses_url, response, header, None)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T91_obtener_informacion_del_estado_con_ID_negativos(statuses_url, header):

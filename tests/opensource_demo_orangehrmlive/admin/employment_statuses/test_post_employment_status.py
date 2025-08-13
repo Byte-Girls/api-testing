@@ -96,6 +96,7 @@ def test_BYT_T47_crear_estado_con_nombre_de_1_caracteres(statuses_url, header):
     
     log_request_response(statuses_url, response, header, payload)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 @pytest.mark.xfail(reason="La app permite crear un estado con solo número BYT-51", run=False)
@@ -116,6 +117,7 @@ def test_BYT_T85_crear_un_estado_de_empleado_con_nombre_de_numeros(statuses_url,
     
     log_request_response(statuses_url, response, header, payload)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 @pytest.mark.xfail(reason="La app permite crear un estado con solo caracteres especiales BYT-52", run=False)
@@ -183,6 +185,7 @@ def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
     
     log_request_response(statuses_url, response_two, header, payload)
     
+@pytest.mark.funcional
 @pytest.mark.seguridad
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -202,6 +205,7 @@ def test_BYT_T39_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
     assert response.status_code == 401
     log_request_response(statuses_url, response, None, payload)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T92_crear_un_estado_de_empleado_con_el_campo_name_de_espacio(statuses_url, header):
