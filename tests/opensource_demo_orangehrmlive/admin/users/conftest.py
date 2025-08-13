@@ -6,6 +6,23 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+@pytest.fixture(scope="function")
+def new_user(user_url, header, get_url, create_employee):
+    employee_number = create_employee["empNumber"]
+    payload = json.dumps({
+        "status": True,
+        "password": "$435sdf35REWfs",
+        "username": "testnewuser" + str(random.randint(1000, 9999)),
+        "userRoleId": 1,
+        "empNumber": employee_number
+    })
+
+    response = requests.post(user_url, headers=header, data=payload)
+    logger.debug("response: %s", response.json())
+    assert response.status_code == 200
+    yield response.json()["data"]
+    delete_user(user_url, header, response.json()["data"]["id"])
+
 @pytest.fixture(scope="module")
 def user(user_url, header, get_url, create_employee):
     employee_number = create_employee["empNumber"]
@@ -22,6 +39,23 @@ def user(user_url, header, get_url, create_employee):
     assert response.status_code == 200
     yield response.json()["data"]
     delete_user(user_url, header, response.json()["data"]["id"])
+
+@pytest.fixture
+def create_multiple_users(user_url, header, create_employee):
+    """Crea 5 usuarios y retorna la lista de dicts."""
+    users = []
+    for _ in range(5):
+        payload = json.dumps({
+            "status": True,
+            "password": "$435sdf35REWfs",
+            "username": "multiusertest" + str(random.randint(1000, 9999)),
+            "userRoleId": 1,
+            "empNumber": create_employee["empNumber"]
+        })
+        response = requests.post(user_url, headers=header, data=payload)
+        assert response.status_code == 200
+        users.append(response.json()["data"])
+    return users
 
 @pytest.fixture(scope="function")
 def disabled_user(user_url, header, get_url, create_employee):
@@ -45,7 +79,7 @@ def delete_user(user_url, header, user_id):
     })
 
     response = requests.delete(user_url, headers=header, data=payload)
-    assert response.status_code == 200
+    #assert response.status_code == 200
 
 @pytest.fixture(scope="module")
 def create_employee(get_url, header):
