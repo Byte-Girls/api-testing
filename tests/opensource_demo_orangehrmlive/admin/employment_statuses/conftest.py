@@ -8,7 +8,7 @@ from src.assertions.common_assertions import *
 logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="module")
-def employment_status_create(statuses_url, header, get_url):
+def employment_status_create(statuses_url, header):
     
     payload = json.dumps({
         "name" : "Calani" + str(random.randint(1000, 9999))
