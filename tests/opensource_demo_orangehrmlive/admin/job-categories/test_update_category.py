@@ -304,3 +304,26 @@ def test_BYT_T187_actualizar_categoria_con_id_con_caracteres_especiales(category
     log_request_response(url, response, header, payload)
 
 
+@pytest.mark.smoke
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.seguridad
+@pytest.mark.xfail(reason="Known Issue. BYT-91: La API permite guardar payload con intento de SQL Injection al actualizar el nombre de la categoría", run=False)
+def test_BYT_T192_Actualizar_categoria_con_sql_injection(category_url, header, category):
+    """
+    Descripción: Verifica que el sistema rechace un payload que contenga un intento de SQL Injection
+    en el campo 'name' al actualizar una categoría.
+    """
+    category_id = category["id"]
+    payload = json.dumps({
+        "name": "'; DROP TABLE job_categories; --"
+    })
+
+    response = requests.put(f"{category_url}/{category_id}", headers=header, data=payload)
+
+    assert_status_code(response, 200)
+    assert_resource_response_schema(response, "category_schema_response.json")
+    log_request_response(f"{category_url}/{category_id}", response, header, payload)
+
+    
