@@ -2,6 +2,8 @@ import time
 import pytest
 import json
 import requests
+from src.assertions.common_assertions import *
+from src.assertions.update_category_assertions import *
 from src.utils.loggers_helpers import log_request_response
 
 @pytest.mark.smoke
@@ -24,10 +26,9 @@ def test_BYT_T24_actualizar_categoria_existente_devuelve_200(category_url, heade
     response = requests.put(url, headers=header, data=payload)
 
     # Validaciones
-    assert response.status_code == 200
-    assert response.json()["data"]["id"] == category_id
-    assert response.json()["data"]["name"] == updated_name
-
+    assert_status_code(response, 200)
+    assert_updated_category(category_url, category_id, updated_name, header)
+    assert_resource_response_schema(response, "category_schema_response.json")
     log_request_response(url, response, header, payload)
 
 
@@ -46,11 +47,9 @@ def test_BYT_T22_actualizar_categoria_inexistente_(category_url, header):
     payload = json.dumps({"name": "Supervisores Actualizado"})
     response = requests.put(url, headers=header, data=payload)
 
-    assert response.status_code == 404
-    body = response.json()
-    assert body.get("error", {}).get("status") in [404, "404"]
-    assert body.get("error", {}).get("message") == "Record Not Found"
-
+    assert_status_code(response, 404)
+    assert_error_message(response, 404, "Record Not Found")
+    assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(url, response, header, payload)
 
 
@@ -70,13 +69,11 @@ def test_BYT_T21_actualizar_categoria_con_id_invalido_string_(category_url, head
     response = requests.put(url, headers=header, data=payload)
 
     # Validaciones
-    assert response.status_code == 422
-    body = response.json()
-    assert body.get("error", {}).get("status") == "422"
-    assert body.get("error", {}).get("message") == "Invalid Parameter"
-    assert "id" in body.get("error", {}).get("data", {}).get("invalidParamKeys", [])
-
+    assert_status_code(response, 422)
+    assert_error_message(response, 422, "Invalid Parameter")
+    assert_resource_response_schema(response, "error_422_schema_response.json")
     log_request_response(url, response, header, payload)
+    
 
 
 @pytest.mark.regression
@@ -94,12 +91,9 @@ def test_BYT_T174_actualizar_categoria_con_name_vacio(category_url, header,categ
     response = requests.put(url, headers=header, data=payload)
 
     # Validaciones
-    assert response.status_code == 422
-    body = response.json()
-    assert str(body.get("error", {}).get("status")) == "422"
-    assert body.get("error", {}).get("message") == "Invalid Parameter"
-    assert "name" in body.get("error", {}).get("data", {}).get("invalidParamKeys", [])
-
+    assert_status_code(response, 422)
+    assert_error_message(response, 422, "Invalid Parameter")
+    assert_resource_response_schema(response, "error_422_schema_response.json")
     log_request_response(url, response, header, payload)
 
 
@@ -118,12 +112,9 @@ def test_BYT_T25_actualizar_categoria_sin_name_en_body(category_url, header,cate
     response = requests.put(url, headers=header, data=payload)
 
     # Validaciones
-    assert response.status_code == 422
-    body = response.json()
-    assert str(body.get("error", {}).get("status")) == "422"
-    assert body.get("error", {}).get("message") == "Invalid Parameter"
-    assert "name" in body.get("error", {}).get("data", {}).get("invalidParamKeys", [])
-
+    assert_status_code(response, 422)
+    assert_error_message(response, 422, "Invalid Parameter")
+    assert_resource_response_schema(response, "error_422_schema_response.json")
     log_request_response(url, response, header, payload)
 
 
@@ -150,11 +141,9 @@ def test_BYT_T177_actualizar_categoria_con_token_invalido_(category_url):
     response = requests.put(url, headers=headers, data=payload)
 
     # Validaciones
-    assert response.status_code == 401
-    body = response.json()
-    assert "error" in body
-    assert "message" in body["error"]
-    
+    assert_status_code(response, 401)
+    assert_invalid_token(response)
+    assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(url, response, headers, payload)
 
 
@@ -176,11 +165,9 @@ def test_BYT_T36_actualizar_categoria_sin_token_(category_url,category):
     response = requests.put(url, data=payload)
 
     # Validaciones
-    assert response.status_code == 401
-    body = response.json()
-    assert "error" in body
-    assert "message" in body["error"]
-    
+    assert_status_code(response, 401)
+    assert_invalid_token(response)
+    assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(url, response, None, payload)
 
    
@@ -203,9 +190,8 @@ def test_BYT_T23_Tiempo_de_respuesta_al_actualizar_categoria(category_url, heade
     response_time = end_time - start_time
 
     # Validaciones
-    assert response.status_code == 200
-    assert response_time < 2, f"Tiempo de respuesta excedido: {response_time:.4f} segundos"
-
+    assert_status_code(response, 200)
+    assert_response_time_less_than(response_time, max_time=2)
     log_request_response(url, response, header, payload)
 
 
@@ -225,12 +211,9 @@ def test_BYT_T181_actualizar_categoria_con_caracteres_especiales(category_url, h
     response = requests.put(url, headers=header, data=payload)
 
     # Validaciones
-    assert response.status_code == 422
-    body = response.json()
-    assert body.get("error", {}).get("status") == "422"
-    assert body.get("error", {}).get("message") == "Invalid Parameter"
-    assert "name" in body.get("error", {}).get("data", {}).get("invalidParamKeys", [])
-
+    assert_status_code(response, 422)
+    assert_error_message(response, 422, "Invalid Parameter")
+    assert_resource_response_schema(response, "error_422_schema_response.json")
     log_request_response(url, response, header, payload)
 
 
@@ -250,13 +233,10 @@ def test_BYT_T182_actualizar_categoria_con_id_decimal(category_url, header):
     response = requests.put(url, headers=header, data=payload)
 
     # Validaciones
-    assert response.status_code == 422 
-    body = response.json()
-    assert body.get("error", {}).get("status") == "422"  
-    assert body.get("error", {}).get("message") == "Invalid Parameter"  
-    assert "id" in body.get("error", {}).get("data", {}).get("invalidParamKeys", []) 
+    assert_status_code(response, 422)
+    assert_error_message(response, 422, "Invalid Parameter")
+    assert_resource_response_schema(response, "error_422_schema_response.json")
     log_request_response(url, response, header, payload)
-
 
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -274,12 +254,9 @@ def test_BYT_T183_actualizar_categoria_con_id_cero(category_url, header):
     response = requests.put(url, headers=header, data=payload)
 
     # Validaciones
-    assert response.status_code == 422  
-    body = response.json()
-    assert body.get("error", {}).get("status") == "422" 
-    assert body.get("error", {}).get("message") == "Invalid Parameter" 
-    assert "id" in body.get("error", {}).get("data", {}).get("invalidParamKeys", []) 
-
+    assert_status_code(response, 422)
+    assert_error_message(response, 422, "Invalid Parameter")
+    assert_resource_response_schema(response, "error_422_schema_response.json")
     log_request_response(url, response, header, payload)
 
 
@@ -299,12 +276,9 @@ def test_BYT_T186_actualizar_categoria_con_id_alfanumerico(category_url, header)
     response = requests.put(url, headers=header, data=payload)
 
     # Validaciones
-    assert response.status_code == 422  
-    body = response.json()
-    assert body.get("error", {}).get("status") == "422"  
-    assert body.get("error", {}).get("message") == "Invalid Parameter"  
-    assert "id" in body.get("error", {}).get("data", {}).get("invalidParamKeys", []) 
-
+    assert_status_code(response, 422)
+    assert_error_message(response, 422, "Invalid Parameter")
+    assert_resource_response_schema(response, "error_422_schema_response.json")
     log_request_response(url, response, header, payload)
 
 
@@ -324,11 +298,9 @@ def test_BYT_T187_actualizar_categoria_con_id_con_caracteres_especiales(category
     response = requests.put(url, headers=header, data=payload)
 
     # Validaciones
-    assert response.status_code == 422  
-    body = response.json()
-    assert body.get("error", {}).get("status") == "422"  
-    assert body.get("error", {}).get("message") == "Invalid Parameter"  
-    assert "id" in body.get("error", {}).get("data", {}).get("invalidParamKeys", [])  
-
+    assert_status_code(response, 422)
+    assert_error_message(response, 422, "Invalid Parameter")
+    assert_resource_response_schema(response, "error_422_schema_response.json")
     log_request_response(url, response, header, payload)
+
 
