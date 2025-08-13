@@ -19,6 +19,7 @@ def test_BYT_T111_Eliminar_estado_existente_con_exito(statuses_url, header,emplo
 
     response = requests.delete(statuses_url, headers=header, data=payload)
     assert response.status_code == 200
+    assert_resource_response_schema(response, "delete_employment_status_schema_response.json")
     log_request_response(statuses_url, response, header, payload)
 
 @pytest.mark.smoke
@@ -29,11 +30,11 @@ def test_BYT_T112_Eliminar_un_estado_inexistente(statuses_url, header):
     """ 
     Descripción: El Administrador quiere eliminar un estado de empleado que no existe en la lista
     """""
-    payload = json.dumps({"ids": [99999999]})
+    payload = json.dumps({"ids": [999999999999999]})
 
 
     response = requests.delete(statuses_url, headers=header, data=payload)
     assert response.status_code == 404
-    assert_resource_response_schema(response, "error_message_schema_response.json") 
-    log_request_response(statuses_url, response, header, payload)  
+    assert_resource_response_schema(response, "delete_404_status_schema_response.json")
+    #log_request_response(statuses_url, response, header, payload)  
       

@@ -3,9 +3,8 @@ import pytest
 import string
 import random
 import json
-import logging
 from src.assertions.common_assertions import *
-logger = logging.getLogger(__name__) # Crear instancia del logger
+from src.utils.loggers_helpers import log_request_response
 
 @pytest.mark.smoke
 @pytest.mark.positivo
@@ -18,11 +17,7 @@ def test_BYT_T79_obtener_informacion_de_un_estado_de_empleado(statuses_url, head
     url = f"{statuses_url}/{id_status}"
     response = requests.get(url, headers=header)
     assert response.status_code == 200
-    assert_resource_response_schema(response, "get_employment_status_schema_response.json")  
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, None)
     
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -34,10 +29,7 @@ def test_BYT_T42_obtener_informacion_de_un_estado_con_ID_de_letras(statuses_url,
     url = f"{statuses_url}/{id_invalido}"
     response = requests.get(url, headers=header)
     assert response.status_code == 422
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, None)
     
 @pytest.mark.seguridad
 @pytest.mark.negativo
@@ -55,9 +47,7 @@ def test_BYT_T43_obtener_informacion_de_un_estado_con_token_invalido(statuses_ur
     }
     response = requests.get(url, headers=headers_invalidos)
     assert response.status_code == 401
-    logger.info("domain: %s", statuses_url)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, None, None)
     
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -70,10 +60,7 @@ def test_BYT_T44_obtener_informacion_de_un_estado_con_caracteres_especiales(stat
     
     response = requests.get(url, headers=header)
     assert response.status_code == 422
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, None)
 
 @pytest.mark.seguridad
 @pytest.mark.negativo
@@ -89,9 +76,7 @@ def test_BYT_T46_obtener_informacion_del_estado_sin_token_de_autorizacion(status
     }
     response = requests.get(url, headers=headers_sin_token)
     assert response.status_code == 401
-    logger.info("domain: %s", statuses_url)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, None, None)
 
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -103,10 +88,7 @@ def test_BYT_T80_obtener_informacion_del_estado_con_id_0(statuses_url, header):
     
     response = requests.get(url, headers=header)
     assert response.status_code == 422
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, None)
 
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -127,10 +109,7 @@ def test_BYT_T81_obtener_informacion_del_estado_con_nombre_del_id(statuses_url, 
     url = f"{statuses_url}/{nombre}"
     response = requests.get(url, headers=header)
     assert response.status_code == 422
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, None)
     
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -143,10 +122,8 @@ def test_BYT_T84_obtener_informacion_del_estado_con_ID_inexistente(statuses_url,
     
     response = requests.get(url, headers=header)
     assert response.status_code == 404
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    assert_resource_response_schema(response, "error_message_schema_response.json")
+    log_request_response(statuses_url, response, header, None)
 
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -157,12 +134,10 @@ def test_BYT_T82_obtener_informacion_del_estado_sin_mandar_el_ID(statuses_url, h
     url = f"{statuses_url}/"
     
     response = requests.get(url, headers=header)
-    assert response.status_code == 404 
+    assert response.status_code == 404
+    #assert_resource_response_schema(response, "error_404_schema_response.json")
+    #log_request_response(statuses_url, response, header, None)
     
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.debug("response text: %s", response.text)
-
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T91_obtener_informacion_del_estado_con_ID_negativos(statuses_url, header):
@@ -173,9 +148,5 @@ def test_BYT_T91_obtener_informacion_del_estado_con_ID_negativos(statuses_url, h
     
     response = requests.get(url, headers=header)
     assert response.status_code == 422 
-    
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, None)
     

@@ -18,7 +18,7 @@ def employment_status_create(statuses_url, header):
     logger.debug("response: %s", response.json())
     assert response.status_code == 200
     yield response.json()["data"]
-    delete_status(statuses_url, header, response.json()["data"]["id"])
+    #delete_status(statuses_url, header, response.json()["data"]["id"])
     
     
 @pytest.fixture(scope= "session")
