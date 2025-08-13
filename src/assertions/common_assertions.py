@@ -9,6 +9,14 @@ def assert_resource_response_schema(response, schema_file_name):
     except jsonschema.exceptions.ValitoionError  as err:
         pytest.fail(f"JSON schema no coincide. Error: {err}")
 
+
+def assert_response_time(elapsed, max_seconds):
+    """
+    Valida que la respuesta tenga código 200 y que el tiempo de respuesta
+    sea menor al máximo permitido.
+    """
+    assert elapsed < max_seconds, f"Tiempo de respuesta excedido: {elapsed:.3f}s (máximo {max_seconds}s)"
+
 def assert_status_code(response, expected_status):
     """
     Verifica que el código de estado HTTP sea el esperado.
@@ -29,4 +37,5 @@ def assert_response_time_less_than(response_time, max_time=2):
     Verifica que el tiempo de respuesta sea menor que el tiempo máximo permitido.
     """
     assert response_time < max_time, f"Tiempo de respuesta excedido: {response_time:.4f} segundos"
+
 
