@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "valid"
+      ]
+    },
+    "meta": {
+      "type": "array",
+      "items": {}
+    },
+    "rels": {
+      "type": "array",
+      "items": {}
+    }
+  },
+  "required": [
+    "data",
+    "meta",
+    "rels"
+  ]
+}
+
