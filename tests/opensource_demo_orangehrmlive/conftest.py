@@ -1,5 +1,6 @@
 import pytest
 import config as conf
+from  src.orange_api.endpoint import OrangeEndpoints
 
 @pytest.fixture(scope="session")
 def get_url():
@@ -18,12 +19,16 @@ def header():
 
 @pytest.fixture(scope="session")
 def category_url():
-    return f"{conf.BASE_URI}/admin/job-categories"
+    return f"{conf.BASE_URI}{OrangeEndpoints.JOB_CATEGORIES.value}"
 
 @pytest.fixture(scope="session")
 def user_url():
-    return f"{conf.BASE_URI}/admin/users"
+    return f"{conf.BASE_URI}{OrangeEndpoints.USERS.value}"
 
 @pytest.fixture(scope="session")
 def statuses_url():
-    return f"{conf.BASE_URI}/admin/employment-statuses"
+    return f"{conf.BASE_URI}{OrangeEndpoints.EMPLOYMENT_STATUSES.value}"
+
+@pytest.fixture(scope="session")
+def validation_username_url():
+    return f"{conf.BASE_URI}{OrangeEndpoints.VALIDATION_USERNAME.value}"
