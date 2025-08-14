@@ -1,19 +1,18 @@
-
-from email import header
 import json
-import random
-import requests
+from src.orange_api.api_request import OrangeRequest
 import pytest
 import json, requests, uuid, pytest
+from faker import Faker
 
+faker = Faker()
 
 @pytest.fixture(scope="module")
 def category(category_url, header):
-  random_name = "Recursos" + str(random.randint(1000, 9999))
+  random_name = "Recursos" + str(faker.random_number(digits=5, fix_len=True))
   payload = json.dumps({
     "name": random_name
   })
-  response = requests.post(category_url, headers=header,data=payload)
+  response = requests.post(category_url, headers=header,payload=payload)
   assert response.status_code == 200
   yield response.json()["data"]
   eliminar_categoria(category_url, header, response.json()["data"]["id"])
@@ -21,9 +20,9 @@ def category(category_url, header):
 
 @pytest.fixture(scope="module")
 def category(category_url, header):
-    random_name = "Recursos" + str(random.randint(1000, 9999))
+    random_name = "Recursos" + str(faker.random_number(digits=5, fix_len=True))
     payload = json.dumps({"name": random_name})
-    resp = requests.post(category_url, headers=header, data=payload)
+    resp = OrangeRequest.post(category_url, headers=header, payload=payload)
     assert resp.status_code == 200
     data = resp.json()["data"]
     yield data
@@ -31,10 +30,9 @@ def category(category_url, header):
 
 @pytest.fixture(scope="function")
 def fresh_category(category_url, header):
-    # Úsalo en tests que SÍ eliminen (delete/update)
     name = f"Recursos_{uuid.uuid4().hex[:6]}"
     payload = json.dumps({"name": name})
-    resp = requests.post(category_url, headers=header, data=payload)
+    resp = OrangeRequest.post(category_url, headers=header, payload=payload)
     assert resp.status_code == 200
     data = resp.json()["data"]
     yield data
@@ -45,6 +43,6 @@ def eliminar_categoria(category_url,header,id):
   payload = json.dumps({
         "ids": [id]
   })
-  response = requests.delete(category_url, headers=header,data=payload)
+  response = OrangeRequest.delete(category_url, headers=header,payload=payload)
   assert response.status_code in (200, 404)
 

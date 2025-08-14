@@ -1,10 +1,10 @@
-import requests
+from src.orange_api.api_request import OrangeRequest
 
 def assert_category_not_exists(category_url, category_id, header):
     """
     Valida que la categoría con el ID dado no exista (retorne 404 al hacer GET).
     """
-    get_response = requests.get(f"{category_url}/{category_id}", headers=header)
+    get_response = OrangeRequest.get(f"{category_url}/{category_id}", headers=header)
     assert get_response.status_code == 404, f"La categoría con ID {category_id} aún existe"
 
 def assert_deleted_category_ids(response, expected_ids=None, unexpected_ids=None):
