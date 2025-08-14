@@ -2,8 +2,8 @@ import requests
 
 class OrangeRequest:
     @staticmethod
-    def get(url, headers):
-        return requests.get(url, headers=headers)
+    def get(url, headers, params=None):
+        return requests.get(url, headers=headers, params=params)
     
     @staticmethod
     def post(url, headers, payload):
@@ -15,6 +15,6 @@ class OrangeRequest:
     
     @staticmethod
     def delete(url, headers, payload):
-        return requests.get(url, headers=headers, data=payload)
+        return requests.delete(url, headers=headers, data=payload)
     
     
