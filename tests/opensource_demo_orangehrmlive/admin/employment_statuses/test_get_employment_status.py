@@ -18,7 +18,7 @@ def test_BYT_T79_obtener_informacion_de_un_estado_de_empleado(statuses_url, head
     url = f"{statuses_url}/{id_status}"
     response = requests.get(url, headers=header)
     assert response.status_code == 200
-    log_request_response(statuses_url, response, header, None)
+    log_request_response(statuses_url, response, header)
     
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -31,7 +31,7 @@ def test_BYT_T42_obtener_informacion_de_un_estado_con_ID_de_letras(statuses_url,
     url = f"{statuses_url}/{id_invalido}"
     response = requests.get(url, headers=header)
     assert response.status_code == 422
-    log_request_response(statuses_url, response, header, None)
+    log_request_response(statuses_url, response, header)
     
 @pytest.mark.funcional
 @pytest.mark.seguridad
@@ -50,7 +50,7 @@ def test_BYT_T43_obtener_informacion_de_un_estado_con_token_invalido(statuses_ur
     }
     response = requests.get(url, headers=headers_invalidos)
     assert response.status_code == 401
-    log_request_response(statuses_url, response, None, None)
+    log_request_response(statuses_url, response)
     
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -64,7 +64,7 @@ def test_BYT_T44_obtener_informacion_de_un_estado_con_caracteres_especiales(stat
     
     response = requests.get(url, headers=header)
     assert response.status_code == 422
-    log_request_response(statuses_url, response, header, None)
+    log_request_response(statuses_url, response, header)
 
 @pytest.mark.funcional
 @pytest.mark.seguridad
@@ -81,7 +81,7 @@ def test_BYT_T46_obtener_informacion_del_estado_sin_token_de_autorizacion(status
     }
     response = requests.get(url, headers=headers_sin_token)
     assert response.status_code == 401
-    log_request_response(statuses_url, response, None, None)
+    log_request_response(statuses_url, response)
 
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -94,7 +94,7 @@ def test_BYT_T80_obtener_informacion_del_estado_con_id_0(statuses_url, header):
     
     response = requests.get(url, headers=header)
     assert response.status_code == 422
-    log_request_response(statuses_url, response, header, None)
+    log_request_response(statuses_url, response, header)
 
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -116,7 +116,7 @@ def test_BYT_T81_obtener_informacion_del_estado_con_nombre_del_id(statuses_url, 
     url = f"{statuses_url}/{nombre}"
     response = requests.get(url, headers=header)
     assert response.status_code == 422
-    log_request_response(statuses_url, response, header, None)
+    log_request_response(statuses_url, response, header)
     
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -131,7 +131,7 @@ def test_BYT_T84_obtener_informacion_del_estado_con_ID_inexistente(statuses_url,
     response = requests.get(url, headers=header)
     assert response.status_code == 404
     assert_resource_response_schema(response, "error_message_schema_response.json")
-    log_request_response(statuses_url, response, header, None)
+    log_request_response(statuses_url, response, header)
 
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -144,8 +144,9 @@ def test_BYT_T82_obtener_informacion_del_estado_sin_mandar_el_ID(statuses_url, h
     
     response = requests.get(url, headers=header)
     assert response.status_code == 404
-    #assert_resource_response_schema(response, "error_404_schema_response.json")
-    #log_request_response(statuses_url, response, header, None)
+    #No se puede hacer el assert porque en el postman no muestra ningun html, json
+    #assert_resource_response_schema(response, "error_message_schema_response.json")
+    #log_request_response(statuses_url, response, header)
     
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -158,5 +159,4 @@ def test_BYT_T91_obtener_informacion_del_estado_con_ID_negativos(statuses_url, h
     
     response = requests.get(url, headers=header)
     assert response.status_code == 422 
-    log_request_response(statuses_url, response, header, None)
-    
+    log_request_response(statuses_url, response, header)

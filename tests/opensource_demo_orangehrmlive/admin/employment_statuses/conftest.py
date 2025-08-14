@@ -1,11 +1,11 @@
 import pytest
 import requests
 import random
-import string
 import json
-import logging
+from faker import Faker
 from src.assertions.common_assertions import * 
-logger = logging.getLogger(__name__)
+
+faker = Faker()
 
 @pytest.fixture(scope="module")
 def employment_status_create(statuses_url, header):
@@ -15,11 +15,8 @@ def employment_status_create(statuses_url, header):
     })
 
     response = requests.post(statuses_url, headers=header, data=payload)
-    logger.debug("response: %s", response.json())
     assert response.status_code == 200
-    yield response.json()["data"]
-    #delete_status(statuses_url, header, response.json()["data"]["id"])
-    
+    yield response.json()["data"]   
 
 def delete_status(statuses_url, header, id_nombre):
     payload = json.dumps({
@@ -31,7 +28,7 @@ def delete_status(statuses_url, header, id_nombre):
 @pytest.fixture
 def employment_status_create_multi(statuses_url, header):
     status = []
-    for _ in range(10):
+    for _ in range(6):
         payload = json.dumps({
             "name": "estado" + str(random.randint(1000, 9999))
         })
