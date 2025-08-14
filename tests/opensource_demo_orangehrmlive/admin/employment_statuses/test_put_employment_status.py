@@ -26,6 +26,7 @@ def test_BYT_T101_Actualizar_un_estado_de_empleado_y_guardar_con_nombre_valido(s
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 200
+    assert_resource_response_schema(response, "get_employment_status_schema_response.json")   
     log_request_response(url, response, header, payload)
 
 @pytest.mark.funcional
@@ -116,6 +117,7 @@ def test_BYT_T105_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_50_cara
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 200
+    assert_resource_response_schema(response, "get_employment_status_schema_response.json")   
     log_request_response(url, response, header, payload)
     
 @pytest.mark.funcional
@@ -138,6 +140,7 @@ def test_BYT_T106_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_1_carac
 
     response = requests.put(url, headers=header, data=payload)
     assert response.status_code == 200
+    assert_resource_response_schema(response, "get_employment_status_schema_response.json")   
     log_request_response(url, response, header, payload)
 
 @pytest.mark.funcional
@@ -228,14 +231,40 @@ def test_BYT_T170_Cancelar_la_actualizacion_de_un_estado(statuses_url, header, e
     })
     response_get = requests.get(url, headers=header)
     assert response_get.status_code == 200
+    assert_resource_response_schema(response_get, "get_employment_status_schema_response.json")   
     estado_original = response_get.json()["data"]
 
     # Simulamos "cancelar" NO enviando PUT
 
     response_get2 = requests.get(url, headers=header)
     assert response_get2.status_code == 200
+    assert_resource_response_schema(response_get2, "get_employment_status_schema_response.json")   
     estado_actual = response_get2.json()["data"]
 
     assert estado_actual == estado_original, "El estado cambió a pesar de cancelar la actualización" 
     log_request_response(url, response_get2, header, payload)
+    
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
+def test_BYT_T109_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_duplicado(statuses_url, header,employment_status_2):
+    """ 
+    Descripción: El Administrador quiere actualizar un estado de empleado ya creado, edita el estado con un nombre existente, el sistema no debe permitir.
+    Prioridad: Alta
+    """""
+    estado_a_actualizar = employment_status_2[0]
+    estado_existente = employment_status_2[1]
+
+    url = f"{statuses_url}/{estado_a_actualizar['id']}"
+
+    payload = json.dumps({
+        "id": estado_a_actualizar["id"],
+        "name": estado_existente["name"]  # Nombre duplicado
+    })
+
+    response = requests.put(url, headers=header, data=payload)
+
+    assert response.status_code == 422
+    assert_resource_response_schema(response, "error_message_schema_response.json") 
+    log_request_response(url, response, header, payload)
     

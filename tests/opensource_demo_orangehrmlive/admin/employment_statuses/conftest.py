@@ -36,4 +36,21 @@ def employment_status_create_multi(statuses_url, header):
         assert response.status_code == 200
         status.append(response.json()["data"])
     return status
-  
+@pytest.fixture
+def employment_status_2(statuses_url, header):
+    status = []
+    for _ in range(2):
+        payload = json.dumps({
+            "name": "estado" + str(random.randint(1000, 9999))
+        })
+        response = requests.post(statuses_url, headers=header, data=payload)
+        assert response.status_code == 200
+        status.append(response.json()["data"])
+    return status
+
+@pytest.fixture
+def obtener_lista_estados(statuses_url, header):
+    """Devuelve la lista completa de estados de empleado"""
+    response = requests.get(statuses_url, headers=header)
+    response.raise_for_status()  
+    return response.json().get("data", [])
