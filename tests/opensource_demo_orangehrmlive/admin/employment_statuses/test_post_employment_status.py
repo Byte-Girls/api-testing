@@ -3,10 +3,8 @@ import random
 import pytest
 import requests
 import string
-import logging
 from src.assertions.common_assertions import * 
-
-logger = logging.getLogger(__name__) # Crear instancia del logger
+from src.utils.loggers_helpers import log_request_response
    
 @pytest.mark.funcional
 @pytest.mark.positivo
@@ -38,10 +36,7 @@ def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
     id_nombre= response.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
     # Logging informacion
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(url, response, header, payload)
 
 @pytest.mark.funcional
 @pytest.mark.valor_limite
@@ -58,10 +53,8 @@ def test_BYT_T38_crear_estado_sin_nombre(statuses_url, header):
     
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 422
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, payload)
+
   
 @pytest.mark.funcional
 @pytest.mark.valor_limite
@@ -78,10 +71,8 @@ def test_BYT_T40_crear_estado_con_nombre_de_51_caracteres(statuses_url, header):
         
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 422
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, payload)
+
 
 @pytest.mark.funcional
 @pytest.mark.valor_limite
@@ -92,24 +83,20 @@ def test_BYT_T47_crear_estado_con_nombre_de_1_caracteres(statuses_url, header):
     Descripción: El admin crea un estado de nombre que contiene 1 caracter y el sistema si permite
     """
     letra_un_caracter = random.choice(string.ascii_letters)
-    logger.debug(f"Letra generada para el nombre: {letra_un_caracter}")
     
     payload = json.dumps({
         "name" : letra_un_caracter 
     })
     
-    logger.debug(f"Payload enviado: {payload}") 
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 200
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     id_nombre= response.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
     
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, payload)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 @pytest.mark.xfail(reason="La app permite crear un estado con solo número BYT-51", run=False)
@@ -128,11 +115,9 @@ def test_BYT_T85_crear_un_estado_de_empleado_con_nombre_de_numeros(statuses_url,
     id_nombre= response.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
     
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, payload)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 @pytest.mark.xfail(reason="La app permite crear un estado con solo caracteres especiales BYT-52", run=False)
@@ -151,10 +136,7 @@ def test_BYT_T86_crear_un_estado_de_empleado_con_caracteres_especiales(statuses_
     id_nombre= response.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
     
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, payload)
     
 @pytest.mark.funcional
 @pytest.mark.valor_limite
@@ -165,23 +147,18 @@ def test_BYT_T40_crear_un_estado_de_empleado_con_caracteres_de_50_caracteres(sta
     Descripción: El admin quiere crear un nuevo estado de empleado con el campo name, de 50 caracteres especiales, el cual es el sistema debe permitir
     """
     nombre_valido = ''.join(random.choices(string.ascii_letters, k=50))
-    logger.debug(f"Letra generada para el nombre: {nombre_valido}")
 
     payload = json.dumps({
         "name" : nombre_valido
     })
-
-    logger.debug(f"Payload enviado: {payload}") 
+ 
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 200
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     id_nombre= response.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
     
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, payload)
     
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -192,13 +169,11 @@ def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
     Descripción: El admin quiere crear un estado de empleado duplicado, el sistema no debe permitir
     """
     nombre_duplicado = ''.join(random.choices(string.ascii_letters, k=6))
-    logger.debug(f"letra generada para el nombre: {nombre_duplicado}")
     
     payload = json.dumps({
         "name" : nombre_duplicado
     })
     
-    logger.info(f"Nombre aleatorio generado: {nombre_duplicado}") 
     response_one = requests.post(statuses_url, headers=header, data=payload)
     assert response_one.status_code == 200
     
@@ -208,13 +183,9 @@ def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
     id_nombre= response_one.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
     
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response_one.status_code)
-    logger.debug("response: %s", response_one.json())
-    logger.info("status code: %s", response_two.status_code)
-    logger.debug("response: %s", response_two.json())
+    log_request_response(statuses_url, response_two, header, payload)
     
+@pytest.mark.funcional
 @pytest.mark.seguridad
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -231,12 +202,10 @@ def test_BYT_T39_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
     }
     
     response = requests.post(statuses_url, headers=headers, data=payload)
-    logger.info(f"Código de respuesta: {response.status_code}")
     assert response.status_code == 401
-    logger.info("domain: %s", statuses_url)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, None, payload)
     
+@pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
 def test_BYT_T92_crear_un_estado_de_empleado_con_el_campo_name_de_espacio(statuses_url, header):
@@ -250,10 +219,7 @@ def test_BYT_T92_crear_un_estado_de_empleado_con_el_campo_name_de_espacio(status
     
     response = requests.post(statuses_url, headers=header, data=payload)
     assert response.status_code == 422 
-    logger.info("domain: %s", statuses_url)
-    logger.debug("request+headers: GET %s %s", statuses_url, header)
-    logger.info("status code: %s", response.status_code)
-    logger.debug("response: %s", response.json())
+    log_request_response(statuses_url, response, header, payload)
 
 def delete_status(statuses_url, header, id_nombre):
     payload = json.dumps({
