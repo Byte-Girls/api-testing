@@ -1,10 +1,10 @@
 import json
 import pytest
-import requests
+from src.orange_api.api_request import OrangeRequest
 from src.assertions.common_assertions import *
 from src.assertions.update_category_assertions import *
 from src.utils.loggers_helpers import log_request_response
-from src.assertions.delete_category_assertions import assert_category_not_exists, assert_deleted_category_ids, assert_id_deleted_once
+from src.assertions.delete_category_assertions import *
 
 @pytest.mark.smoke
 @pytest.mark.regression
@@ -14,14 +14,17 @@ def test_BYT_T93_Eliminación_exitosa_de_categoría_existente_(category_url, hea
     """
     Descripción: Verifica que la eliminación de una categoría de trabajo existente
     devuelva un código de estado HTTP 200 OK y que la categoría se elimine correctamente.
+
+    Prioridad: Alta
     """
+    
     category_id = category["id"]
 
     payload = json.dumps({
         "ids": [category_id]
     })
 
-    response = requests.delete(category_url, headers=header, data=payload)
+    response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     # Validaciones
     assert_status_code(response, 200)
@@ -36,13 +39,15 @@ def test_BYT_T173_eliminar_categoria_con_ids_duplicados(category_url, header, fr
     """
     Descripción: Verifica que la eliminación funcione correctamente
     aunque el array de IDs contenga valores duplicados.
+
+      Prioridad: Media
     """
     category_id = fresh_category["id"]
     payload = json.dumps({
         "ids": [category_id, category_id]
     })
 
-    response = requests.delete(category_url, headers=header, data=payload)
+    response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     # Validaciones
     assert_status_code(response, 200)
@@ -60,6 +65,8 @@ def test_BYT_T100_Eliminar_categoria_sin_token_valido(category_url, category):
     """
     Descripción: Verifica que al intentar eliminar una categoría de trabajo sin un token válido,
     el sistema devuelva un código HTTP 401 Unauthorized y no permita la eliminación.
+    
+     Prioridad: Alta
     """
     category_id = category["id"]
 
@@ -71,7 +78,7 @@ def test_BYT_T100_Eliminar_categoria_sin_token_valido(category_url, category):
         'Content-Type': 'application/json',
         'Authorization': 'Bearer invalid_or_expired_token'
     }
-    response = requests.delete(category_url, headers=headers, data=payload)
+    response = OrangeRequest.delete(category_url, headers=headers, data=payload)
 
     # Validaciones
     assert_status_code(response, 401)
@@ -87,12 +94,14 @@ def test_BYT_T172_Eliminar_categoria_con_id_negativo(category_url, header):
     """
     Descripción: Verifica que al enviar IDs negativos en la eliminación de categorías,
     el sistema responda 404 Not Found y no procese la eliminación.
+    
+     Prioridad: Media
     """
     payload = json.dumps({
         "ids": [-8]
     })
 
-    response = requests.delete(category_url, headers=header, data=payload)
+    response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     # Validaciones
     assert_status_code(response, 404)
@@ -108,12 +117,14 @@ def test_BYT_T176_Eliminar_categoria_con_ids_nulos_o_nan(category_url, header):
     """
     Descripción: Verifica que al enviar IDs nulos o NaN en la eliminación de categorías,
     el sistema responda 404 Not Found y no procese la eliminación.
+    
+    Prioridad: Media
     """
     payload = json.dumps({
         "ids": [None, "NaN"
     ]})
 
-    response = requests.delete(category_url, headers=header, data=payload)
+    response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     # Validaciones
     assert_status_code(response, 404)
@@ -130,12 +141,14 @@ def test_BYT_T95_Eliminar_categoria_inexistente(category_url, header):
     """
     Descripción: Verifica que al intentar eliminar una categoría inexistente
     el sistema devuelva un código HTTP 404 Not Found y no procese la eliminación.
+    
+    Prioridad: Media
     """
     payload = json.dumps({
         "ids": [99999]
     }) 
 
-    response = requests.delete(category_url, headers=header, data=payload)
+    response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     # Validaciones
     assert_status_code(response, 404)
@@ -154,6 +167,8 @@ def test_BYT_T175_Eliminar_categoria_con_payload_malicioso(category_url, header)
     Descripción: Verifica que al intentar eliminar categorías enviando payload con
     caracteres extraños o potencialmente maliciosos (SQLi, XSS), el sistema no ejecute
     código malicioso y responda de forma controlada.
+    
+     Prioridad : Alta
     """
     payload = json.dumps({
         "ids": [
@@ -162,7 +177,7 @@ def test_BYT_T175_Eliminar_categoria_con_payload_malicioso(category_url, header)
         ]
     })
 
-    response = requests.delete(category_url, headers=header, data=payload)
+    response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     # Validaciones: según seguridad, debería ser 400 o 404; actualmente devuelve 200 → bug.
     assert_status_code(response, 200)
@@ -178,15 +193,17 @@ def test_BYT_T96_Eliminar_categoria_ya_eliminada(category_url, header, fresh_cat
     """
     Descripción: Verifica que al intentar eliminar una categoría que ya fue eliminada previamente,
     el sistema devuelva un código HTTP 404 Not Found y no procese la eliminación.
+    
+    Prioridad: Media
     """
     category_id = fresh_category["id"]
     payload = json.dumps({"ids": [category_id]})
 
-    first_response = requests.delete(category_url, headers=header, data=payload)
+    first_response = OrangeRequest.delete(category_url, headers=header, data=payload)
     assert_status_code(first_response, 200)
     assert_resource_response_schema(first_response, "delete_category_schema_response.json")
 
-    second_response = requests.delete(category_url, headers=header, data=payload)
+    second_response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     assert_status_code(second_response, 404)
     assert_error_message(second_response, 404, "Records Not Found")
@@ -202,13 +219,15 @@ def test_BYT_T94_Eliminar_multiples_categorias_a_la_vez(category_url, header, fr
     Descripción: Verifica que el endpoint permita eliminar múltiples categorías en una sola petición.
     Se envía un ID existente y otros que no existen; se espera 200 OK y que el array 'data'
     contenga únicamente los IDs realmente eliminados.
+    
+    Prioridad: Media
     """
     existing_id = fresh_category["id"]
     non_existing_ids = [99999, 88888, 77777]  
 
     payload = json.dumps({"ids": [existing_id, *non_existing_ids]})
 
-    response = requests.delete(category_url, headers=header, data=payload)
+    response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     # Validaciones
     assert_status_code(response, 200)
@@ -230,9 +249,11 @@ def test_BYT_T98_Eliminar_categoria_con_id_formato_invalido(category_url, header
     """
     Descripción: Verifica que al intentar eliminar una categoría enviando un ID en formato no numérico
     (string), el sistema devuelva un código HTTP 404 Not Found y no procese la eliminación.
+    
+    Prioridad: Media
     """
     payload = json.dumps({"ids": ["a"]})  
-    response = requests.delete(category_url, headers=header, data=payload)
+    response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     # Validaciones
     assert_status_code(response, 404)
@@ -248,9 +269,11 @@ def test_BYT_T97_Eliminar_categoria_con_body_vacio(category_url, header):
     """
     Descripción: Verifica que al intentar eliminar una categoría enviando el body vacío,
     el sistema devuelva un código HTTP 404 Not Found y no procese la eliminación.
+    
+    Prioridad: Media
     """
     payload = json.dumps({})
-    response = requests.delete(category_url, headers=header, data=payload)
+    response = OrangeRequest.delete(category_url, headers=header, data=payload)
 
     # Validaciones
     assert_status_code(response, 404)

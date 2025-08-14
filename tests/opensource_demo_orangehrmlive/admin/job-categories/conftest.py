@@ -21,7 +21,6 @@ def category(category_url, header):
 
 @pytest.fixture(scope="module")
 def category(category_url, header):
-    # Úsalo en tests que NO eliminen la categoría
     random_name = "Recursos" + str(random.randint(1000, 9999))
     payload = json.dumps({"name": random_name})
     resp = requests.post(category_url, headers=header, data=payload)

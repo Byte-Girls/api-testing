@@ -14,7 +14,5 @@ class OrangeRequest:
         return requests.post(url, headers=headers, data=payload)
     
     @staticmethod
-    def delete(url, headers, payload):
-        return requests.get(url, headers=headers, data=payload)
-    
-    
+    def delete(url, headers=None, data=None, json=None):
+        return requests.delete(url, headers=headers, data=data, json=json)
