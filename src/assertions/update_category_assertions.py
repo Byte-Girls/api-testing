@@ -26,3 +26,12 @@ def assert_invalid_token(response):
     # Verifica que el mensaje esté dentro de los posibles errores
     assert body["error"]["message"] in expected_messages, \
         f"Se esperaba uno de los mensajes {expected_messages}, pero se recibió {body['error']['message']}"
+
+
+def assert_category_updated(response, expected_name):
+    data = response.json()["data"]
+    assert data["name"] == expected_name, (
+        f"Se esperaba que el nombre de la categoría fuera '{expected_name}', "
+        f"pero se obtuvo '{data['name']}'"
+    )
+

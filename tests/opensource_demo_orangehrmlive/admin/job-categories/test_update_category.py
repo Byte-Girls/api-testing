@@ -2,9 +2,12 @@ import time
 import pytest
 import json
 import requests
+from faker import Faker
 from src.assertions.common_assertions import *
 from src.assertions.update_category_assertions import *
 from src.utils.loggers_helpers import log_request_response
+
+faker = Faker()
 
 @pytest.mark.smoke
 @pytest.mark.regression
@@ -15,12 +18,14 @@ def test_BYT_T24_actualizar_categoria_existente_devuelve_200(category_url, heade
     Descripción: Verifica que la actualización de una categoría de trabajo existente
     devuelva un código de estado HTTP 200 OK y que el nombre de la categoría se actualice correctamente.
     """
+
+    updated_name = faker.user_name()
     category_id =category["id"]
-    updated_name = "Supervisores"
 
     payload = json.dumps({
         "name": updated_name
     })
+    print(payload)
 
     url = f"{category_url}/{category_id}"
     response = requests.put(url, headers=header, data=payload)
@@ -118,7 +123,6 @@ def test_BYT_T25_actualizar_categoria_sin_name_en_body(category_url, header,cate
     log_request_response(url, response, header, payload)
 
 
-@pytest.mark.smoke
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -147,7 +151,6 @@ def test_BYT_T177_actualizar_categoria_con_token_invalido_(category_url):
     log_request_response(url, response, headers, payload)
 
 
-@pytest.mark.smoke
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -173,16 +176,21 @@ def test_BYT_T36_actualizar_categoria_sin_token_(category_url,category):
    
 @pytest.mark.regression
 @pytest.mark.funcional
+@pytest.mark.positivo
 @pytest.mark.rendimiento
+
 def test_BYT_T23_Tiempo_de_respuesta_al_actualizar_categoria(category_url, header, category):
     """
     Descripción: Verificar que el tiempo de respuesta al actualizar una categoría 
     de trabajo existente con un ID válido sea menor a 2 segundos.
+    
     """
+    updated_name = faker.user_name()
+
     category_id = category["id"]
     url = f"{category_url}/{category_id}"
 
-    payload = json.dumps({"name": "Supervisores Actualizados"})
+    payload = json.dumps({"name": updated_name})
     start_time = time.time()
 
     response = requests.put(url, headers=header, data=payload)
@@ -304,3 +312,26 @@ def test_BYT_T187_actualizar_categoria_con_id_con_caracteres_especiales(category
     log_request_response(url, response, header, payload)
 
 
+@pytest.mark.smoke
+@pytest.mark.regression
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.seguridad
+@pytest.mark.xfail(reason="Known Issue. BYT-91: La API permite guardar payload con intento de SQL Injection al actualizar el nombre de la categoría", run=False)
+def test_BYT_T192_Actualizar_categoria_con_sql_injection(category_url, header, category):
+    """
+    Descripción: Verifica que el sistema rechace un payload que contenga un intento de SQL Injection
+    en el campo 'name' al actualizar una categoría.
+    """
+    category_id = category["id"]
+    payload = json.dumps({
+        "name": "'; DROP TABLE job_categories; --"
+    })
+
+    response = requests.put(f"{category_url}/{category_id}", headers=header, data=payload)
+
+    assert_status_code(response, 200)
+    assert_resource_response_schema(response, "category_schema_response.json")
+    log_request_response(f"{category_url}/{category_id}", response, header, payload)
+
+    
