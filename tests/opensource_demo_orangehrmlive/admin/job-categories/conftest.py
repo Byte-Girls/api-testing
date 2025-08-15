@@ -43,6 +43,7 @@ def eliminar_categoria(category_url,header,id):
   payload = json.dumps({
         "ids": [id]
   })
-  response = OrangeRequest.delete(category_url, headers=header,payload=payload)
+  response = OrangeRequest.delete(category_url, headers=header,data=payload)
   assert response.status_code in (200, 404)
+
 

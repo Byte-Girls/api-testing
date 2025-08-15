@@ -210,7 +210,7 @@ def test_BYT_T96_Eliminar_categoria_ya_eliminada(category_url, header, fresh_cat
     assert_resource_response_schema(second_response, "error_message_schema_response.json")
     log_request_response(category_url, second_response, header, payload)
 
-
+@pytest.mark.smoke
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.positivo

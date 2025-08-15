@@ -118,7 +118,6 @@ def test_BYT_T25_actualizar_categoria_sin_name_en_body(category_url, header,cate
     log_request_response(url, response, header, payload)
 
 
-@pytest.mark.smoke
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -147,7 +146,6 @@ def test_BYT_T177_actualizar_categoria_con_token_invalido_(category_url):
     log_request_response(url, response, headers, payload)
 
 
-@pytest.mark.smoke
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
@@ -173,7 +171,9 @@ def test_BYT_T36_actualizar_categoria_sin_token_(category_url,category):
    
 @pytest.mark.regression
 @pytest.mark.funcional
+@pytest.mark.positivo
 @pytest.mark.rendimiento
+
 def test_BYT_T23_Tiempo_de_respuesta_al_actualizar_categoria(category_url, header, category):
     """
     Descripción: Verificar que el tiempo de respuesta al actualizar una categoría 
