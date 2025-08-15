@@ -1,6 +1,6 @@
 import requests
 
-def estado_no_lista(statuses_url, status_id, header):
+def assert_estado_no_presente_en_lista(statuses_url, status_id, header):
     """
     Verifica que el estado de empleado con el ID dado no aparezca en el listado de estados.
     """

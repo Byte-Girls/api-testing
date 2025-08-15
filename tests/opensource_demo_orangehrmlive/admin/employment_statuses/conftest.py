@@ -15,7 +15,7 @@ def employment_status_create(statuses_url, header):
     })
 
     response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 200
+    assert_status_code(response, expected_status=200)
     yield response.json()["data"]   
 
 def delete_status(statuses_url, header, id_nombre):
@@ -23,7 +23,7 @@ def delete_status(statuses_url, header, id_nombre):
         "ids": [id_nombre]
     })
     response = requests.delete(statuses_url, headers=header, data=payload)
-    assert response.status_code == 200
+    assert_status_code(response, expected_status=200)
 
 @pytest.fixture
 def employment_status_create_multi(statuses_url, header):
@@ -33,18 +33,18 @@ def employment_status_create_multi(statuses_url, header):
             "name": "estado" + str(random.randint(1000, 9999))
         })
         response = requests.post(statuses_url, headers=header, data=payload)
-        assert response.status_code == 200
+        assert_status_code(response, expected_status=200)
         status.append(response.json()["data"])
     return status
 @pytest.fixture
-def employment_status_2(statuses_url, header):
+def create_two_employment_status(statuses_url, header):
     status = []
     for _ in range(2):
         payload = json.dumps({
             "name": "estado" + str(random.randint(1000, 9999))
         })
         response = requests.post(statuses_url, headers=header, data=payload)
-        assert response.status_code == 200
+        assert_status_code(response, expected_status=200)
         status.append(response.json()["data"])
     return status
 
