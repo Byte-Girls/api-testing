@@ -20,7 +20,7 @@ def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
     })
     
     response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 200
+    assert_status_code(response, expected_status=200)
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     response_data = response.json()["data"]
     #comparación directa con el campo
@@ -29,7 +29,7 @@ def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
     #validación del get
     url = f"{statuses_url}/{response_data['id']}"
     response = requests.get(url, headers=header)
-    assert response.status_code == 200
+    assert_status_code(response, expected_status=200)
     response_data = response.json()["data"]
     # comparacion dierecta campo a campo
     assert response_data["name"] == expected_payload_dict["name"]
@@ -52,7 +52,7 @@ def test_BYT_T38_crear_estado_sin_nombre(statuses_url, header):
     })
     
     response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 422
+    assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header, payload)
 
   
@@ -70,7 +70,7 @@ def test_BYT_T40_crear_estado_con_nombre_de_51_caracteres(statuses_url, header):
     })
         
     response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 422
+    assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header, payload)
 
 
@@ -89,11 +89,10 @@ def test_BYT_T47_crear_estado_con_nombre_de_1_caracteres(statuses_url, header):
     })
     
     response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 200
+    assert_status_code(response, expected_status=200)
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     id_nombre= response.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
-    
     log_request_response(statuses_url, response, header, payload)
     
 @pytest.mark.funcional
@@ -110,7 +109,7 @@ def test_BYT_T85_crear_un_estado_de_empleado_con_nombre_de_numeros(statuses_url,
     })
     
     response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 400
+    assert_status_code(response, expected_status=400)
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     id_nombre= response.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
@@ -131,11 +130,10 @@ def test_BYT_T86_crear_un_estado_de_empleado_con_caracteres_especiales(statuses_
     })
     
     response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 400
+    assert_status_code(response, expected_status=400)
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     id_nombre= response.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
-    
     log_request_response(statuses_url, response, header, payload)
     
 @pytest.mark.funcional
@@ -153,11 +151,10 @@ def test_BYT_T40_crear_un_estado_de_empleado_con_caracteres_de_50_caracteres(sta
     })
  
     response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 200
+    assert_status_code(response, expected_status=200)
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     id_nombre= response.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
-    
     log_request_response(statuses_url, response, header, payload)
     
 @pytest.mark.funcional
@@ -175,10 +172,10 @@ def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
     })
     
     response_one = requests.post(statuses_url, headers=header, data=payload)
-    assert response_one.status_code == 200
+    assert_status_code(response_one, expected_status=200)
     
     response_two = requests.post(statuses_url, headers=header, data=payload)
-    assert response_two.status_code == 422
+    assert_status_code(response_two, expected_status=422)
     assert_resource_response_schema(response_one, "create_employment_status_schema_response.json")
     id_nombre= response_one.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
@@ -202,7 +199,7 @@ def test_BYT_T39_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
     }
     
     response = requests.post(statuses_url, headers=headers, data=payload)
-    assert response.status_code == 401
+    assert_status_code(response, expected_status=401)
     log_request_response(statuses_url, response, None, payload)
     
 @pytest.mark.funcional
@@ -218,7 +215,7 @@ def test_BYT_T92_crear_un_estado_de_empleado_con_el_campo_name_de_espacio(status
     })
     
     response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 422 
+    assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header, payload)
 
 def delete_status(statuses_url, header, id_nombre):
@@ -226,5 +223,5 @@ def delete_status(statuses_url, header, id_nombre):
         "ids": [id_nombre]
     })
     response = requests.delete(statuses_url, headers=header, data=payload)
-    assert response.status_code == 200 
+    assert_status_code(response, expected_status=200)
     
