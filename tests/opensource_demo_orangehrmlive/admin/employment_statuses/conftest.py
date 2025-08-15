@@ -17,6 +17,17 @@ def employment_status_create(statuses_url, header):
     response = requests.post(statuses_url, headers=header, data=payload)
     assert_status_code(response, expected_status=200)
     yield response.json()["data"]   
+    
+@pytest.fixture(scope="function")
+def fresh_employment_status(statuses_url, header):
+    
+    payload = json.dumps({
+        "name" : "Calani" + str(random.randint(1000, 9999))
+    })
+
+    response = requests.post(statuses_url, headers=header, data=payload)
+    assert_status_code(response, expected_status=200)
+    yield response.json()["data"]   
 
 def delete_status(statuses_url, header, id_nombre):
     payload = json.dumps({
