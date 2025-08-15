@@ -13,6 +13,7 @@ from src.utils.loggers_helpers import log_request_response
 def test_BYT_T101_Actualizar_un_estado_de_empleado_y_guardar_con_nombre_valido(statuses_url, header,employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, con datos válidos, el sistema debe permitir
+    Prioridad: Alta
     """""
     id_estado= employment_status_create["id"]
     url = f"{statuses_url}/{id_estado}"
@@ -24,16 +25,18 @@ def test_BYT_T101_Actualizar_un_estado_de_empleado_y_guardar_con_nombre_valido(s
     })
 
     response = requests.put(url, headers=header, data=payload)
-    assert response.status_code == 200
+    assert_status_code(response, expected_status=200)
+    assert_resource_response_schema(response, "get_employment_status_schema_response.json")   
     log_request_response(url, response, header, payload)
 
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
-@pytest.mark.xfail(reason="La app permite actualizar un estado con nombre de puro caracteres especiales", run=False)
+@pytest.mark.xfail(reason="Byt-92:La app permite actualizar un estado con nombre de puro caracteres especiales", run=False)
 def test_BYT_T102_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_con_puro_caracteres_especiales(statuses_url, header,employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, con nombre de puro caracteres especiales, el sistema no debe permitir
+    Prioridad: Media
     """""
     id_estado= employment_status_create["id"]
     url = f"{statuses_url}/{id_estado}"
@@ -45,17 +48,18 @@ def test_BYT_T102_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_con_puro_c
     })
 
     response = requests.put(url, headers=header, data=payload)
-    assert response.status_code == 400
+    assert_status_code(response, expected_status=400)
     assert_resource_response_schema(response, "error_message_schema_response.json") 
     log_request_response(url, response, header, payload)
     
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
-@pytest.mark.xfail(reason="La app permite actualizar un estado con nombre de puro numeros", run=False)
+@pytest.mark.xfail(reason="Byt-93:La app permite actualizar un estado con nombre de puro numeros", run=False)
 def test_BYT_T103_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_puro_números(statuses_url, header,employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, con nombre de puro numeros, el sistema no debe permitir
+    Prioridad: Media
     """""
     id_estado= employment_status_create["id"]
     url = f"{statuses_url}/{id_estado}"
@@ -67,7 +71,7 @@ def test_BYT_T103_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_puro_n�
     })
 
     response = requests.put(url, headers=header, data=payload)
-    assert response.status_code == 400
+    assert_status_code(response, expected_status=400)
     assert_resource_response_schema(response, "error_message_schema_response.json") 
     log_request_response(url, response, header, payload)
     
@@ -78,6 +82,7 @@ def test_BYT_T103_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_puro_n�
 def test_BYT_T104_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_vacio(statuses_url, header,employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, con el campo nombre (vacio), el sistema no debe permitir
+    Prioridad: Media
     """""
     id_estado= employment_status_create["id"]
     url = f"{statuses_url}/{id_estado}"
@@ -88,7 +93,7 @@ def test_BYT_T104_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_vacio(stat
     })
 
     response = requests.put(url, headers=header, data=payload)
-    assert response.status_code == 422
+    assert_status_code(response, expected_status=422)
     assert_resource_response_schema(response, "error_message_schema_response.json")   
     log_request_response(url, response, header, payload)
     
@@ -99,6 +104,7 @@ def test_BYT_T104_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_vacio(stat
 def test_BYT_T105_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_50_caracteres(statuses_url, header,employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, con el campo nombre su máximo de caracteres que es 50, el sistema debe permitir
+    Prioridad: Media
     """""
     nombre_valido = ''.join(random.choices(string.ascii_letters, k=50))
     id_estado= employment_status_create["id"]
@@ -110,7 +116,8 @@ def test_BYT_T105_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_50_cara
     })
 
     response = requests.put(url, headers=header, data=payload)
-    assert response.status_code == 200
+    assert_status_code(response, expected_status=200)
+    assert_resource_response_schema(response, "get_employment_status_schema_response.json")   
     log_request_response(url, response, header, payload)
     
 @pytest.mark.funcional
@@ -120,6 +127,7 @@ def test_BYT_T105_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_50_cara
 def test_BYT_T106_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_1_caracter(statuses_url, header,employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, con el campo nombre el mínimo de caracteres que es 1, el sistema debe permitir
+    Prioridad: Media
     """""
     letra_un_caracter = random.choice(string.ascii_letters)
     id_estado= employment_status_create["id"]
@@ -131,7 +139,8 @@ def test_BYT_T106_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_1_carac
     })
 
     response = requests.put(url, headers=header, data=payload)
-    assert response.status_code == 200
+    assert_status_code(response, expected_status=200)
+    assert_resource_response_schema(response, "get_employment_status_schema_response.json")   
     log_request_response(url, response, header, payload)
 
 @pytest.mark.funcional
@@ -141,6 +150,7 @@ def test_BYT_T106_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_1_carac
 def test_BYT_T107_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_51_caracteres(statuses_url, header,employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, con el campo nombre de 51 caracteres, el sistema no debe permitir ya que su máximo es de 50 caracteres
+    Prioridad: Media
     """""
     nombre_invalido = ''.join(random.choices(string.ascii_letters, k=51))
     id_estado= employment_status_create["id"]
@@ -152,7 +162,7 @@ def test_BYT_T107_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_51_cara
     })
 
     response = requests.put(url, headers=header, data=payload)
-    assert response.status_code == 422
+    assert_status_code(response, expected_status=422)
     assert_resource_response_schema(response, "error_message_schema_response.json") 
     log_request_response(url, response, header, payload)  
 
@@ -162,6 +172,7 @@ def test_BYT_T107_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_51_cara
 def test_BYT_T108_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_solo_espacio(statuses_url, header,employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, con el campo nombre de solo (espacio), el sistema no debe permitir
+    Prioridad: Media
     """""
     id_estado= employment_status_create["id"]
     url = f"{statuses_url}/{id_estado}"
@@ -172,7 +183,7 @@ def test_BYT_T108_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_solo_es
     })
 
     response = requests.put(url, headers=header, data=payload)
-    assert response.status_code == 422
+    assert_status_code(response, expected_status=422)
     assert_resource_response_schema(response, "error_message_schema_response.json") 
     log_request_response(url, response, header, payload)
 
@@ -184,6 +195,7 @@ def test_BYT_T108_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_de_solo_es
 def test_BYT_T110_Actualizar_un_estado_de_empleo_sin_autenticacion(statuses_url, employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, quiere actualizar un estado sin estar autenticado, el sistema no debe permitir
+    Prioridad: Alta
     """""
     id_estado= employment_status_create["id"]
     url = f"{statuses_url}/{id_estado}"
@@ -197,7 +209,7 @@ def test_BYT_T110_Actualizar_un_estado_de_empleo_sin_autenticacion(statuses_url,
     }
     
     response = requests.put(url, headers=headers, data=payload)
-    assert response.status_code == 401
+    assert_status_code(response, expected_status=401)
     assert_resource_response_schema(response, "error_message_schema_response.json") 
     log_request_response(url, response, None, payload)
 
@@ -208,6 +220,7 @@ def test_BYT_T110_Actualizar_un_estado_de_empleo_sin_autenticacion(statuses_url,
 def test_BYT_T170_Cancelar_la_actualizacion_de_un_estado(statuses_url, header, employment_status_create):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, pero cancela la actualización, el sistema debe permitir
+    Prioridad: Alta
     """""
     id_estado= employment_status_create["id"]
     url = f"{statuses_url}/{id_estado}"
@@ -217,15 +230,41 @@ def test_BYT_T170_Cancelar_la_actualizacion_de_un_estado(statuses_url, header, e
     "name" : "Actualizar estado"
     })
     response_get = requests.get(url, headers=header)
-    assert response_get.status_code == 200
+    assert_status_code(response_get, expected_status=200)
+    assert_resource_response_schema(response_get, "get_employment_status_schema_response.json")   
     estado_original = response_get.json()["data"]
 
     # Simulamos "cancelar" NO enviando PUT
 
     response_get2 = requests.get(url, headers=header)
-    assert response_get2.status_code == 200
+    assert_status_code(response_get2, expected_status=200)
+    assert_resource_response_schema(response_get2, "get_employment_status_schema_response.json")   
     estado_actual = response_get2.json()["data"]
 
     assert estado_actual == estado_original, "El estado cambió a pesar de cancelar la actualización" 
     log_request_response(url, response_get2, header, payload)
+    
+@pytest.mark.funcional
+@pytest.mark.negativo
+@pytest.mark.regression
+def test_BYT_T109_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_duplicado(statuses_url, header,create_two_employment_status):
+    """ 
+    Descripción: El Administrador quiere actualizar un estado de empleado ya creado, edita el estado con un nombre existente, el sistema no debe permitir.
+    Prioridad: Alta
+    """""
+    estado_a_actualizar = create_two_employment_status[0]
+    estado_existente = create_two_employment_status[1]
+
+    url = f"{statuses_url}/{estado_a_actualizar['id']}"
+
+    payload = json.dumps({
+        "id": estado_a_actualizar["id"],
+        "name": estado_existente["name"]  # Nombre duplicado
+    })
+
+    response = requests.put(url, headers=header, data=payload)
+
+    assert_status_code(response, expected_status=422)
+    assert_resource_response_schema(response, "error_message_schema_response.json") 
+    log_request_response(url, response, header, payload)
     

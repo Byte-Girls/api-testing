@@ -230,3 +230,5 @@ def test_BYT_T5_Obtener_categoria_sin_autenticacion(category_url):
 
     assert response.status_code == 401, \
         f"Se esperaba 401 pero se recibió {response.status_code}"
+    
+    
