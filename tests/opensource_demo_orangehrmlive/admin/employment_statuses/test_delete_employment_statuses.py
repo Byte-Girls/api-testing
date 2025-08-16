@@ -5,6 +5,7 @@ from faker import Faker
 from src.assertions.common_assertions import * 
 from src.utils.loggers_helpers import log_request_response
 from src.assertions.employment_status_assertions import *
+from src.orange_api.api_request import OrangeRequest
 
 faker = Faker()
 
@@ -18,10 +19,11 @@ def test_BYT_T111_Eliminar_estado_existente_con_exito(statuses_url, header, fres
     Prioridad: Alta
     """
     payload = json.dumps({"ids": [fresh_employment_status["id"]]})
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert_status_code(response, expected_status=200)
-    assert_resource_response_schema(response, "delete_employment_status_schema_response.json")
     log_request_response(statuses_url, response, header, payload)
+    assert_resource_response_schema(response, "delete_employment_status_schema_response.json")
+    
 
 @pytest.mark.smoke
 @pytest.mark.funcional
@@ -34,7 +36,7 @@ def test_BYT_T112_Eliminar_un_estado_inexistente(statuses_url, header):
     """
     estado_id_inexistente = faker.random_number(digits=5, fix_len=True)
     payload = json.dumps({"ids": [estado_id_inexistente]})
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert response.status_code == 404
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(statuses_url, response, header, payload)  
@@ -51,7 +53,7 @@ def test_BYT_T166_Eliminar_varios_estados_simultaneamente(statuses_url, header, 
     status_ids = [employment_status_create["id"] for employment_status_create in employment_status_create_multi]
     payload = json.dumps({"ids": [status_ids]})
     print(payload)
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert response.status_code == 200
     assert_resource_response_schema(response, "delete_employment_status_schema_response.json")
     log_request_response(statuses_url, response, header, payload)  
@@ -64,8 +66,8 @@ def test_BYT_T168_Eliminar_estado_sin_mandar_id(statuses_url, header):
     Descripción: El Administrador quiere eliminar un estado de empleado, pero no manda el id. el sistema no debe permitir
     Prioridad: Media
     """
-    payload = json.dumps({"ids": [""]})
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    payload = json.dumps({"ids": []})
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert response.status_code == 404
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(statuses_url, response, header, payload)
@@ -97,7 +99,7 @@ def test_BYT_T178_Eliminar_estado_mandando_id_de_letras(statuses_url, header):
     Prioridad: Baja
     """
     payload = json.dumps({"ids": ["abc"]})
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert response.status_code == 404
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(statuses_url, response, header, payload)
@@ -111,7 +113,7 @@ def test_BYT_T179_Eliminar_estado_con_id_de_caracteres_especiales(statuses_url, 
     Prioridad: Baja
     """
     payload = json.dumps({"ids": ["%&/"]})
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert response.status_code == 404
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(statuses_url, response, header, payload)
@@ -125,7 +127,7 @@ def test_BYT_T188_Eliminar_estado_con_id_negativo(statuses_url, header):
     Prioridad: Media
     """
     payload = json.dumps({"ids": [-1]})
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert response.status_code == 404
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(statuses_url, response, header, payload)
@@ -139,7 +141,7 @@ def test_BYT_T190_Eliminar_estado_con_id_decimal(statuses_url, header):
     Prioridad: Media
     """
     payload = json.dumps({"ids": [1.2]})
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert response.status_code == 404
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(statuses_url, response, header, payload)    
@@ -183,7 +185,7 @@ def test_BYT_T180_Eliminar_un_estado_correctamente_y_que_no_se_muestre_en_la_lis
     Prioridad: Media
     """
     payload = json.dumps({"ids": [fresh_employment_status["id"]]})
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert_status_code(response, expected_status=200)
     assert_resource_response_schema(response, "delete_employment_status_schema_response.json")
     log_request_response(statuses_url, response, header, payload) 
@@ -198,7 +200,7 @@ def test_BYT_T171_Eliminar_sin_seleccionar_ningun_estado(statuses_url, header):
     Prioridad: Media
     """
     payload = json.dumps({"ids": []})
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert response.status_code == 404
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(statuses_url, response, header, payload)    
