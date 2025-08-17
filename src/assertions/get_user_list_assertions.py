@@ -48,8 +48,7 @@ def assert_users_sorted(response, sort_order="asc", key="userName"):
     """
     users = response.json().get("data", [])
     values = [user[key] for user in users]
-    print("----sort_order.lower() == desc -->", sort_order.lower() == "desc")
-    expected = sorted(values, reverse=(sort_order.lower() == "desc"))
+    expected = sorted(values, key=lambda x: x.lower(), reverse=(sort_order.lower() == "desc"))
     assert values == expected, (
         f"Usuarios no fueron ordenados correctamente.\n"
         f"Esperado: {expected}\n"
