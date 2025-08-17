@@ -38,3 +38,15 @@ def assert_id_deleted_once(response, user_id):
     count = deleted_ids_str.count(str(user_id))
     assert count == 1, f"El ID {user_id} aparece {count} veces en deletedIds, se esperaba 1"
 
+def assert_no_password_in_response(response):
+    response_data = response.json()["data"]
+    assert "password" not in response_data, \
+        "El campo 'password' no debe estar presente en la respuesta del usuario"
+
+def assert_user_status(response, expected_status: bool):
+    response_data = response.json()["data"]
+    assert response_data["status"] == expected_status, (
+        f"El campo 'status' debería ser {expected_status}, "
+        f"pero se obtuvo {response_data['status']}"
+    )
+

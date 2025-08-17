@@ -26,11 +26,12 @@ def test_BYT_T125_eliminar_usuario_con_id_valido(user_url, header, new_user):
 @pytest.mark.funcional
 @pytest.mark.positivo
 @pytest.mark.regression
-def test_BYT_T126_eliminar_multiples_usuarios_con_ids_validos(user_url, header, create_multiple_users):
+@pytest.mark.parametrize("multiple_users", [5], indirect=True)
+def test_BYT_T126_eliminar_multiples_usuarios_con_ids_validos(user_url, header, multiple_users):
     """
     Descripción: Valida que se puedan eliminar múltiples usuarios existentes proporcionando IDs válidos.
     """
-    user_ids = [new_user["id"] for new_user in create_multiple_users]
+    user_ids = [new_user["id"] for new_user in multiple_users]
     payload = json.dumps({"ids": user_ids})
     response = requests.delete(user_url, headers=header, data=payload)
     assert response.status_code == 200
@@ -87,11 +88,12 @@ def test_BYT_T134_eliminar_usuario_y_confirmar_listado(user_url, header, new_use
 @pytest.mark.funcional
 @pytest.mark.positivo
 @pytest.mark.regression
-def test_BYT_T135_eliminar_multiples_y_confirmar_listado(user_url, header, create_multiple_users):
+@pytest.mark.parametrize("multiple_users", [5], indirect=True)
+def test_BYT_T135_eliminar_multiples_y_confirmar_listado(user_url, header, multiple_users):
     """
     Descripción: Comprueba que al eliminar múltiples usuarios, ninguno aparezca en el listado posteriormente.
     """
-    ids = [u["id"] for u in create_multiple_users]
+    ids = [u["id"] for u in multiple_users]
     payload = json.dumps({"ids": ids})
     response = requests.delete(user_url, headers=header, data=payload)
     assert response.status_code == 200
@@ -121,11 +123,12 @@ def test_BYT_T138_eliminar_usuario_tiempo(user_url, header, new_user):
 @pytest.mark.positivo
 @pytest.mark.regression
 @pytest.mark.rendimiento
-def test_BYT_T139_eliminar_5_usuarios_tiempo(user_url, header, create_multiple_users):
+@pytest.mark.parametrize("multiple_users", [5], indirect=True)
+def test_BYT_T139_eliminar_5_usuarios_tiempo(user_url, header, multiple_users):
     """
     Descripción: Mide el tiempo de respuesta al eliminar 5 usuarios para asegurar que sea menor a 5 segundos.
     """
-    ids = [u["id"] for u in create_multiple_users]
+    ids = [u["id"] for u in multiple_users]
     payload = json.dumps({"ids": ids})
     start_time = time.time()
     response = requests.delete(user_url, headers=header, data=payload)

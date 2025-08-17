@@ -1,105 +1,61 @@
-import json
-import random
-import requests
 import pytest
 import logging
+from src.data_generators.user_data import *
+from src.utils.fixture_helpers import create_and_cleanup
 
 logger = logging.getLogger(__name__)
 
-@pytest.fixture(scope="function")
-def new_user(user_url, header, get_url, create_employee):
-    employee_number = create_employee["empNumber"]
-    payload = json.dumps({
-        "status": True,
-        "password": "$435sdf35REWfs",
-        "username": "testnewuser" + str(random.randint(1000, 9999)),
-        "userRoleId": 1,
-        "empNumber": employee_number
-    })
-
-    response = requests.post(user_url, headers=header, data=payload)
-    logger.debug("response: %s", response.json())
-    assert response.status_code == 200
-    yield response.json()["data"]
-    delete_user(user_url, header, response.json()["data"]["id"])
+@pytest.fixture
+def new_user(create_employee, user_api):
+    new_user_data = generate_user_payload(emp_number=create_employee["empNumber"])
+    yield from create_and_cleanup(user_api, new_user_data, id_key="id")
 
 @pytest.fixture(scope="module")
-def user(user_url, header, get_url, create_employee):
-    employee_number = create_employee["empNumber"]
-    payload = json.dumps({
-        "status": True,
-        "password": "$435sdf35REWfs",
-        "username": "testnewuser" + str(random.randint(1000, 9999)),
-        "userRoleId": 1,
-        "empNumber": employee_number
-    })
+def user(create_employee, user_api):
+    new_user_data = generate_user_payload(emp_number=create_employee["empNumber"])
+    yield from create_and_cleanup(user_api, new_user_data, id_key="id")
 
-    response = requests.post(user_url, headers=header, data=payload)
-    logger.debug("response: %s", response.json())
-    assert response.status_code == 200
-    yield response.json()["data"]
-    delete_user(user_url, header, response.json()["data"]["id"])
+@pytest.fixture(scope="module")
+def disabled_user(create_employee, user_api):
+    new_user_data = generate_user_payload(emp_number=create_employee["empNumber"], status=False)
+    yield from create_and_cleanup(user_api, new_user_data, id_key="id")
 
 @pytest.fixture
-def create_multiple_users(user_url, header, create_employee):
-    """Crea 5 usuarios y retorna la lista de dicts."""
+def multiple_users(request, create_employee, user_api):
+    num_users_to_create = request.param
     users = []
-    for _ in range(5):
-        payload = json.dumps({
-            "status": True,
-            "password": "$435sdf35REWfs",
-            "username": "multiusertest" + str(random.randint(1000, 9999)),
-            "userRoleId": 1,
-            "empNumber": create_employee["empNumber"]
-        })
-        response = requests.post(user_url, headers=header, data=payload)
+    for _ in range(num_users_to_create):
+        new_user_data = generate_user_payload(emp_number=create_employee["empNumber"])
+        response = user_api.create(new_user_data)
         assert response.status_code == 200
         users.append(response.json()["data"])
-    return users
-
-@pytest.fixture(scope="function")
-def disabled_user(user_url, header, get_url, create_employee):
-    employee_number = create_employee["empNumber"]
-    payload = json.dumps({
-        "status": False,
-        "password": "$435sdf35REWfs",
-        "username": "userdisabled" + str(random.randint(1000, 9999)),
-        "userRoleId": 1,
-        "empNumber": employee_number
-    })
-
-    response = requests.post(user_url, headers=header, data=payload)
-    assert response.status_code == 200
-    yield response.json()["data"]
-    delete_user(user_url, header, response.json()["data"]["id"])
-
-def delete_user(user_url, header, user_id):
-    payload = json.dumps({
-        "ids": [user_id]
-    })
-
-    response = requests.delete(user_url, headers=header, data=payload)
-    #assert response.status_code == 200
+    yield users
+    user_ids = [user["id"] for user in users]
+    user_api.delete(payload={"ids": user_ids})
 
 @pytest.fixture(scope="module")
-def create_employee(get_url, header):
-    url = f"{get_url}/pim/employees"
-    payload = json.dumps({
-        "lastName": "test create new employee",
-        "firstName": "test"
-    })
+def create_employee(employee_api):
+    new_employee_data = generate_employee_payload()
+    yield from create_and_cleanup(employee_api, new_employee_data, id_key="empNumber")
 
-    response = requests.post(url, headers=header, data=payload)
-    assert response.status_code == 200
-    yield response.json()["data"]
-    delete_employee(get_url, header, response.json()["data"]["empNumber"])
+@pytest.fixture
+def delete_all_users(user_api):
+    response = user_api.get_all()
+    users = response.json()["data"]
+    # Note: El usuario con ID=1 es el admin y no se debe intentar eliminar, caso contrario lanza error.
+    user_ids = [user["id"] for user in users if user["id"] != 1]
+    user_api.delete(payload={"ids": user_ids})
+    yield
+    for user in users:
+        user_api.create(user)
 
-def delete_employee(get_url, header, employee_id):
-    url = f"{get_url}/pim/employees"
-    payload = json.dumps({
-        "ids": [employee_id]
-    })
-
-    response = requests.delete(url, headers=header, data=payload)
-    assert response.status_code == 200
+@pytest.fixture
+def get_nth_user(request, user_api):
+    position = request.param
+    response = user_api.get_all()
+    users = response.json()["data"]
+    if len(users) >= position:
+        return users[position]
+    logger.info(f"Usuario {position} no encontrado")
+    return None
 
