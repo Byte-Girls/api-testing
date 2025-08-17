@@ -62,3 +62,4 @@ def assert_user_matches_expected(actual_user, expected_user):
         f"Esperado: {expected_user}\n"
         f"Obtenido: {actual_user}"
     )
+

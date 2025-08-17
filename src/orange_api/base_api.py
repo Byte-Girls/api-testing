@@ -18,10 +18,11 @@ class BaseAPI:
         )
 
     @log_response
-    def get_by_id(self, item_id):
+    def get_by_id(self, item_id, specific_header=None):
+        final_header = specific_header if specific_header is not None else self.header
         return OrangeRequest.get(
             f"{self.base_url}/{item_id}",
-            headers=self.header
+            headers=final_header
         )
 
     @log_response
