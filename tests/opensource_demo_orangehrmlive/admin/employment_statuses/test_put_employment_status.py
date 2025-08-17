@@ -247,13 +247,13 @@ def test_BYT_T170_Cancelar_la_actualizacion_de_un_estado(statuses_url, header, e
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
-def test_BYT_T109_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_duplicado(statuses_url, header,create_two_employment_status):
+def test_BYT_T109_Actualizar_un_estado_de_empleo_y_guardar_con_nombre_duplicado(statuses_url, header,employment_status_create_multi):
     """ 
     Descripción: El Administrador quiere actualizar un estado de empleado ya creado, edita el estado con un nombre existente, el sistema no debe permitir.
     Prioridad: Alta
     """""
-    estado_a_actualizar = create_two_employment_status[0]
-    estado_existente = create_two_employment_status[1]
+    estado_a_actualizar = employment_status_create_multi[0]
+    estado_existente = employment_status_create_multi[1]
 
     url = f"{statuses_url}/{estado_a_actualizar['id']}"
 
