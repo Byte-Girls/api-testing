@@ -280,3 +280,5 @@ def test_BYT_T97_Eliminar_categoria_con_body_vacio(category_url, header):
     assert_error_message(response, 404, "Records Not Found")
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(category_url, response, header, payload)
+
+    

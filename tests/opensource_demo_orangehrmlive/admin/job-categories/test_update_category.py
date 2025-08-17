@@ -1,7 +1,7 @@
 import time
 import pytest
 import json
-import requests
+from src.orange_api.api_request import OrangeRequest
 from faker import Faker
 from src.assertions.common_assertions import *
 from src.assertions.update_category_assertions import *
@@ -17,6 +17,8 @@ def test_BYT_T24_actualizar_categoria_existente_devuelve_200(category_url, heade
     """
     Descripción: Verifica que la actualización de una categoría de trabajo existente
     devuelva un código de estado HTTP 200 OK y que el nombre de la categoría se actualice correctamente.
+    
+    Prioridad: Alta
     """
 
     updated_name = faker.user_name()
@@ -28,7 +30,7 @@ def test_BYT_T24_actualizar_categoria_existente_devuelve_200(category_url, heade
     print(payload)
 
     url = f"{category_url}/{category_id}"
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     # Validaciones
     assert_status_code(response, 200)
@@ -45,12 +47,14 @@ def test_BYT_T22_actualizar_categoria_inexistente_(category_url, header):
     """
     Descripción: Verifica que intentar actualizar una categoría que no existe
     devuelve HTTP 404 Not Found con el mensaje "Record Not Found".
+    
+    Prioridad: Media
     """
     non_existing_id = 999999
     url = f"{category_url}/{non_existing_id}"
 
     payload = json.dumps({"name": "Supervisores Actualizado"})
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     assert_status_code(response, 404)
     assert_error_message(response, 404, "Record Not Found")
@@ -66,12 +70,14 @@ def test_BYT_T21_actualizar_categoria_con_id_invalido_string_(category_url, head
     Descripción: Verifica que al intentar actualizar una categoría con un ID de formato inválido
     (String), se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje 
     de parámetro inválido.
+    
+    Prioridad: Media
     """
     invalid_id = "qwertty"
     url = f"{category_url}/{invalid_id}"
 
     payload = json.dumps({"name": "Supervisores Actualizado"})
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     # Validaciones
     assert_status_code(response, 422)
@@ -88,12 +94,14 @@ def test_BYT_T174_actualizar_categoria_con_name_vacio(category_url, header,categ
     """
     Descripción: Verifica que al intentar actualizar una categoría con el campo 'name' vacío,
     se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    
+    Prioridad: Media
     """
     valid_id = category["id"]
     url = f"{category_url}/{valid_id}"
 
     payload = json.dumps({"name": ""})
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     # Validaciones
     assert_status_code(response, 422)
@@ -109,12 +117,14 @@ def test_BYT_T25_actualizar_categoria_sin_name_en_body(category_url, header,cate
     """
     Descripción: Verifica que al intentar actualizar una categoría sin incluir el campo 'name' en el body,
     se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    
+    Prioridad: Media
     """
     valid_id = category["id"]
     url = f"{category_url}/{valid_id}"
 
     payload = json.dumps({})
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     # Validaciones
     assert_status_code(response, 422)
@@ -131,6 +141,8 @@ def test_BYT_T177_actualizar_categoria_con_token_invalido_(category_url):
     """
     Descripción: Verifica que al intentar actualizar una categoría con un token inválido,
     se reciba un código de estado HTTP 401 Unauthorized.
+    
+    Prioridad: Alta
     """
     valid_id = 31
     url = f"{category_url}/{valid_id}"
@@ -142,7 +154,7 @@ def test_BYT_T177_actualizar_categoria_con_token_invalido_(category_url):
         'Authorization': 'Bearer invalid_or_expired_token'
     }
 
-    response = requests.put(url, headers=headers, data=payload)
+    response = OrangeRequest.put(url, headers=headers, payload=payload)
 
     # Validaciones
     assert_status_code(response, 401)
@@ -159,19 +171,25 @@ def test_BYT_T36_actualizar_categoria_sin_token_(category_url,category):
     """
     Descripción: Verifica que al intentar actualizar una categoría sin token de autenticación,
     se reciba un código de estado HTTP 401 Unauthorized.
+    
+    Prioridad: Alta
     """
     valid_id = category["id"]
     url = f"{category_url}/{valid_id}"
 
     payload = json.dumps({"name": "Supervisores Actualizados"})
     
-    response = requests.put(url, data=payload)
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer invalid_or_expired_token'
+    }
+    response = OrangeRequest.put(url,headers=headers, payload=payload)
 
     # Validaciones
     assert_status_code(response, 401)
     assert_invalid_token(response)
     assert_resource_response_schema(response, "error_message_schema_response.json")
-    log_request_response(url, response, None, payload)
+    log_request_response(url, response, headers, payload)
 
    
 @pytest.mark.regression
@@ -184,6 +202,7 @@ def test_BYT_T23_Tiempo_de_respuesta_al_actualizar_categoria(category_url, heade
     Descripción: Verificar que el tiempo de respuesta al actualizar una categoría 
     de trabajo existente con un ID válido sea menor a 2 segundos.
     
+    Prioridad: Media
     """
     updated_name = faker.user_name()
 
@@ -193,7 +212,7 @@ def test_BYT_T23_Tiempo_de_respuesta_al_actualizar_categoria(category_url, heade
     payload = json.dumps({"name": updated_name})
     start_time = time.time()
 
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
     end_time = time.time()
     response_time = end_time - start_time
 
@@ -211,12 +230,14 @@ def test_BYT_T181_actualizar_categoria_con_caracteres_especiales(category_url, h
     """
     Descripción: Verifica que al intentar actualizar una categoría con caracteres especiales en el nombre,
     se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    
+    Prioridad: Media
     """
     valid_id = category["id"] 
     url = f"{category_url}/{valid_id}"
 
     payload = json.dumps({"name": "@#$%()"})
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     # Validaciones
     assert_status_code(response, 422)
@@ -233,12 +254,14 @@ def test_BYT_T182_actualizar_categoria_con_id_decimal(category_url, header):
     """
     Descripción: Verifica que al intentar actualizar una categoría con un ID decimal,
     se reciba un código de estado HTTP 422 Unprocessable Content 
+    
+    Prioridad: Media
     """
     category_id = "2.5"
     url = f"{category_url}/{category_id}"
 
     payload = json.dumps({"name": "Freelance"})
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     # Validaciones
     assert_status_code(response, 422)
@@ -253,13 +276,15 @@ def test_BYT_T183_actualizar_categoria_con_id_cero(category_url, header):
     """
     Descripción: Verifica que al intentar actualizar una categoría con un ID igual a 0,
     se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    
+    Prioridad: Media
     """
     invalid_id = 0
     url = f"{category_url}/{invalid_id}"
 
     payload = json.dumps({"name": "Supervisores Actualizados"})
     
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     # Validaciones
     assert_status_code(response, 422)
@@ -275,13 +300,15 @@ def test_BYT_T186_actualizar_categoria_con_id_alfanumerico(category_url, header)
     """
     Descripción: Verifica que al intentar actualizar una categoría con un ID alfanumérico,
     se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    
+    Prioridad: Media
     """
     alphanumeric_id = "abcdar" 
     url = f"{category_url}/{alphanumeric_id}"
 
     payload = json.dumps({"name": "Freelance"})
     
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     # Validaciones
     assert_status_code(response, 422)
@@ -297,13 +324,15 @@ def test_BYT_T187_actualizar_categoria_con_id_con_caracteres_especiales(category
     """
     Descripción: Verifica que al intentar actualizar una categoría con un ID que contiene caracteres especiales,
     se reciba un código de estado HTTP 422 Unprocessable Content con el mensaje de parámetro inválido.
+    
+    Prioridad: Media
     """
     invalid_id = "@#%&*"
     url = f"{category_url}/{invalid_id}"
 
     payload = json.dumps({"name": "Freelance"})
     
-    response = requests.put(url, headers=header, data=payload)
+    response = OrangeRequest.put(url, headers=header, payload=payload)
 
     # Validaciones
     assert_status_code(response, 422)
@@ -322,13 +351,15 @@ def test_BYT_T192_Actualizar_categoria_con_sql_injection(category_url, header, c
     """
     Descripción: Verifica que el sistema rechace un payload que contenga un intento de SQL Injection
     en el campo 'name' al actualizar una categoría.
+    
+    Prioridad: Alta
     """
     category_id = category["id"]
     payload = json.dumps({
         "name": "'; DROP TABLE job_categories; --"
     })
 
-    response = requests.put(f"{category_url}/{category_id}", headers=header, data=payload)
+    response = OrangeRequest.put(f"{category_url}/{category_id}", headers=header, payload=payload)
 
     assert_status_code(response, 200)
     assert_resource_response_schema(response, "category_schema_response.json")
