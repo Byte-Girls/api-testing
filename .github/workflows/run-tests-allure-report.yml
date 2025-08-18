@@ -1,0 +1,57 @@
+name: Generate Allure report
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run tests on'
+        required: true
+        default: 'main'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.inputs.branch || github.ref }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt allure-pytest
+
+    - name: Update token
+      run: |
+        python ./src/utils/update_token_config.py
+
+    - name: Run tests with Allure
+      run: |
+        mkdir -p test-results/allure-results
+        pytest -v --alluredir=test-results/allure-results || true
+
+    - name: Generate Allure HTML report
+      run: |
+        pip install allure-python-commons
+        wget https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz -O allure.tgz
+        tar -xvzf allure.tgz
+        ./allure-2.29.0/bin/allure generate test-results/allure-results -o test-results/allure-report --clean
+
+    - name: Upload Allure report as artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-report
+        path: test-results/allure-report
+
