@@ -1,49 +1,39 @@
 import logging
 import random
 import string
-import requests
 import json
+from venv import logger
 import pytest
 from src.assertions.common_assertions import *
-logger = logging.getLogger(__name__) # Crear instancia del logger
+from src.orange_api.api_request import OrangeRequest
+from src.assertions.get_category_assertions import assert_category_persisted
+from src.utils.loggers_helpers import log_request_response
 
 @pytest.mark.smoke
 @pytest.mark.regression
 @pytest.mark.funcional
+@pytest.mark.positivo
 def test_BYT_T9_crear_una_categoria_con_nombre_valido(category_url, header):
   """
   Descripción:Validar que el administrador pueda crear correctamente una categoría 
   de trabajo con un nombre válido.Al enviar una solicitud POST al endpoint /admin/job-categories 
   con un JSON que contenga un nombre de categoría único
+  
+  Prioridad: Alta 
   """
   expected_name = "Recursos Humanos" + str(random.randint(1000, 9999))
   payload = json.dumps({
     "name": expected_name
   })
 
-  logger.debug("Payload enviado: %s", payload)
-
-  response = requests.post(category_url, headers=header, data=payload)
-  
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
+  log_request_response(category_url, response, header, payload)
   response = response.json()["data"]
   assert response["name"] == expected_name
-  # Validación con el get
-  url = f"{category_url}/{response['id']}" 
-  logger.debug("GET URL: %s", url)
-
-  response = requests.get(url, headers=header)
-  logger.info("GET status code: %s", response.status_code)
-  logger.debug("GET response: %s", response.json())
-  logger.info("domain: %s", category_url)
-
-  assert response.status_code == 200
-  response = response.json()["data"]
-  assert response["name"] == expected_name
+  #validación get
+  assert_category_persisted(category_url, response["id"], expected_name, header, logger) 
   
  
 @pytest.mark.regression
@@ -53,16 +43,15 @@ def test_BYT_T9_crear_una_categoria_con_nombre_valido(category_url, header):
 def test_BYT_T14_crear_una_categoria_con_el_campo_nombre_como_numero(category_url, header):
   """
   Descripción: Verifica que el campo "nombre" no acepte valores numéricos
+  
+  Prioridad: Media
   """
   payload = json.dumps({
     "name": "78945"
   })
-  logger.debug("Payload enviado: %s", payload)
-
-  response = requests.post(category_url, headers=header, data=payload)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  logger.info("domain: %s", category_url)
+  
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
+  log_request_response(category_url, response, header, payload)
   assert response.status_code == 400  
 
 
@@ -73,16 +62,16 @@ def test_BYT_T14_crear_una_categoria_con_el_campo_nombre_como_numero(category_ur
 def test_BYT_T12_crear_una_categoria_con_caracteres_especiales_en_el_campo_name(category_url, header):
   """
   Descripción: Verifica que el campo "nombre" no acepte caracteres especiales
+  
+  Prioridad: Media
   """   
   payload = json.dumps({
     "name": "  #$%()*| "
   })
   logger.debug("Payload enviado: %s", payload)
 
-  response = requests.post(category_url, headers=header, data=payload)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  logger.info("domain: %s", category_url)
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
+  log_request_response(category_url, response, header, payload)
   assert response.status_code == 400  
 
 
@@ -93,6 +82,8 @@ def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(category_url, header):
   """
   Validar que el sistema no permita la creación de una nueva categoría de trabajo 
   con un nombre que ya existe en el sistema.
+  
+  Prioridad: Media
   """
   payload = json.dumps({
     "name": "Administrador"
@@ -100,13 +91,11 @@ def test_BYT_T10_crear_una_categoria_con_nombre_duplicado(category_url, header):
   logger.debug("Payload enviado: %s", payload)
 
   #Primera creación 
-  response1=requests.post(category_url, headers=header, data=payload)
+  response1=OrangeRequest.post(category_url, headers=header, payload=payload)
   logger.info("Primera creación - status code: %s", response1.status_code)
   #Segunda creación con nombre duplicado
-  response = requests.post(category_url, headers=header, data=payload)
-  logger.info("Segunda creación - status code: %s", response.status_code)
-  logger.debug("Segunda creación - response: %s", response.json())
-  logger.info("domain: %s", category_url)
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
+  log_request_response(category_url, response, header, payload)
   assert response.status_code == 422
   
 
@@ -117,6 +106,8 @@ def test_BYT_T15_Verificar_que_el_JSON_de_respuesta_contenga_los_campos_id_name(
   """
   Validar que, al crear una categoría de trabajo exitosamente mediante el endpoint correspondiente, 
   el cuerpo de la respuesta contenga los campos id y name.
+  
+  Prioridad: Alta 
   """
   expected_name = "Recursos" + str(random.randint(1000, 9999))
   payload = json.dumps({
@@ -124,10 +115,8 @@ def test_BYT_T15_Verificar_que_el_JSON_de_respuesta_contenga_los_campos_id_name(
   })
   logger.debug("Payload enviado: %s", payload)
   
-  response = requests.post(category_url, headers=header, data=payload)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  logger.info("domain: %s", category_url)
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
+  log_request_response(category_url, response, header, payload)
 
   assert_resource_response_schema(response, "category_schema_response.json")
   assert response.status_code == 200  
@@ -142,6 +131,8 @@ def test_BYT_T13_Crear_una_categoría_con_nombre_mayor_a_50_caracteres(category_
   """
   Verificar que el sistema no permita crear una categoría de trabajo cuando el valor del 
   campo name supera los 50 caracteres permitidos.
+  
+   Prioridad: Media
   """
   name_with_more_than_50_characters = "a" * 51
   payload = json.dumps({
@@ -149,10 +140,8 @@ def test_BYT_T13_Crear_una_categoría_con_nombre_mayor_a_50_caracteres(category_
   })
   logger.debug("Payload enviado: %s", payload)
   
-  response = requests.post(category_url, headers=header, data=payload)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  logger.info("domain: %s", category_url)
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
+  log_request_response(category_url, response, header, payload)
   assert response.status_code == 422
 
 
@@ -163,14 +152,14 @@ def test_BYT_T11_Crear_una_categoria_sin_enviar_el_campo_nombre(category_url, he
   """
   Verificar que el sistema no permita la creación de una categoría de trabajo cuando no se incluye el campo name  
   Enviar una solicitud POST al endpoint /admin/job-categories con el cuerpo vacío {}.
+  
+  Prioridad: Media
   """
   payload = json.dumps({})
   logger.debug("Payload enviado: %s", payload)
 
-  response = requests.post(category_url, headers=header, data=payload)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  logger.info("domain: %s", category_url)
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
+  log_request_response(category_url, response, header, payload)
   assert response.status_code == 422
   assert_resource_response_schema(response, "error_422_schema_response.json")
 
@@ -182,19 +171,17 @@ def test_BYT_T19_Crear_una_categoría_con_exactamente_50_caracteres(category_url
   """
   Verificar que el sistema permita crear una categoría de trabajo cuando el valor del 
   campo name sea exactamente 50 caracteres.
+  
+  Prioridad: Media
   """
   letter_one_character = random.choice(string.ascii_letters)
   name_with_50_characters = letter_one_character * 50
   payload = json.dumps({
     "name": name_with_50_characters
   })
-  logger.debug("Payload enviado: %s", payload)
   
-  response = requests.post(category_url, headers=header, data=payload)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  logger.info("domain: %s", category_url)
-
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
+  log_request_response(category_url, response, header, payload)
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
   response = response.json()["data"]
@@ -211,6 +198,8 @@ def test_BYT_T20_Crear_categoria_con_1_caracter(category_url, header):
   """
   Verificar que el sistema permita crear una categoría de trabajo cuando el valor 
   del campo name tiene exactamente 1 carácter.
+  
+  Prioridad: Media
   """
   letter_one_character = random.choice(string.ascii_letters)
   name_with_1_character = letter_one_character
@@ -219,11 +208,8 @@ def test_BYT_T20_Crear_categoria_con_1_caracter(category_url, header):
     "name": name_with_1_character
   })
 
-  logger.debug(f"Payload enviado: {payload}")
-  response = requests.post(category_url, headers=header, data=payload)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  logger.info("domain: %s", category_url)
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
+  log_request_response(category_url, response, header, payload)
 
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
@@ -233,10 +219,13 @@ def test_BYT_T20_Crear_categoria_con_1_caracter(category_url, header):
 
 @pytest.mark.regression
 @pytest.mark.funcional
+@pytest.mark.positivo
 @pytest.mark.rendimiento
 def test_BYT_T18_Verificar_tiempo_de_respuesta_menor_a_2s_al_crear_categoria(category_url, header):
   """
   Verificar que el tiempo de respuesta al crear una categoría de trabajo sea menor a 2 segundos.
+  
+  Prioridad: Media 
   """
   name_for_timing = "CategoriaTiempo_" + str(random.randint(1000, 9999))
   payload = json.dumps({
@@ -244,13 +233,9 @@ def test_BYT_T18_Verificar_tiempo_de_respuesta_menor_a_2s_al_crear_categoria(cat
   })
   logger.debug("Payload enviado: %s", payload)
 
-  response = requests.post(category_url, headers=header, data=payload)
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
   response_time = response.elapsed.total_seconds()
-  logger.info("status code: %s", response.status_code)
-  logger.info("Tiempo de respuesta: %.4f segundos", response_time)
-  logger.debug("response: %s", response.json())
-  logger.info("domain: %s", category_url)
-
+  log_request_response(category_url, response, header, payload)
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
   response_data = response.json()["data"]
@@ -268,27 +253,26 @@ def test_BYT_T17_Categoria_creada_aparece_en_listado(category_url, header):
   """
   Validar que una categoría de trabajo creada aparezca luego en la lista obtenida 
   mediante GET /admin/job-categories.
+  
+  Prioridad: Alta 
   """
   unique_name = "Categoria_" + str(random.randint(1000, 9999))
   payload = json.dumps({
     "name": unique_name
   })
-  logger.debug("Payload enviado: %s", payload)
-  logger.info("domain: %s", category_url)
-
-  # Crear la categoría
-  response = requests.post(category_url, headers=header, data=payload)
-  logger.info("POST status code: %s", response.status_code)
-  logger.debug("POST response: %s", response.json())
   
+  # Crear la categoría
+  response = OrangeRequest.post(category_url, headers=header, payload=payload)
+  log_request_response(category_url, response, header, payload)
+
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
   created_data = response.json()["data"]
   assert created_data["name"] == unique_name
   # Obtener listado de categorías
-  response = requests.get(category_url, headers=header)
-  logger.info("GET status code: %s", response.status_code)
-  logger.debug("GET response: %s", response.json())
+  response = OrangeRequest.get(category_url, headers=header)
+  log_request_response(category_url, response, header, payload)
+
   assert response.status_code == 200
   response = response.json()["data"]
   # Validar que la categoría creada esté en el listado
@@ -301,6 +285,5 @@ def eliminar_categoria(category_url,header,response):
   payload = json.dumps({
         "ids": [category_id]
   })
-  response = requests.delete(category_url, headers=header,data=payload)
+  response = OrangeRequest.delete(category_url, headers=header, payload=payload)
 
-  

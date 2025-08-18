@@ -4,6 +4,7 @@ import pytest
 import json, requests, uuid, pytest
 from faker import Faker
 
+
 faker = Faker()
 
 @pytest.fixture(scope="module")
@@ -45,5 +46,4 @@ def eliminar_categoria(category_url,header,id):
   })
   response = OrangeRequest.delete(category_url, headers=header,payload=payload)
   assert response.status_code in (200, 404)
-
 

@@ -179,7 +179,6 @@ def test_BYT_T175_Eliminar_categoria_con_payload_malicioso(category_url, header)
 
     response = OrangeRequest.delete(category_url, headers=header, payload=payload)
 
-    # Validaciones: según seguridad, debería ser 400 o 404; actualmente devuelve 200 → bug.
     assert_status_code(response, 200)
     assert_resource_response_schema(response, "delete_category_schema_response.json")
     log_request_response(category_url, response, header, payload)
@@ -280,3 +279,5 @@ def test_BYT_T97_Eliminar_categoria_con_body_vacio(category_url, header):
     assert_error_message(response, 404, "Records Not Found")
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(category_url, response, header, payload)
+
+    
