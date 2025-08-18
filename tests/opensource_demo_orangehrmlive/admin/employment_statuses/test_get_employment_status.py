@@ -1,10 +1,11 @@
-import requests
 import pytest
-import string
-import random
 import json
+from faker import Faker
 from src.assertions.common_assertions import *
 from src.utils.loggers_helpers import log_request_response
+from src.orange_api.api_request import OrangeRequest
+
+faker = Faker()
 
 @pytest.mark.funcional
 @pytest.mark.smoke
@@ -16,7 +17,7 @@ def test_BYT_T79_obtener_informacion_de_un_estado_de_empleado(statuses_url, head
     """
     id_status=employment_status_create["id"]
     url = f"{statuses_url}/{id_status}"
-    response = requests.get(url, headers=header)
+    response = OrangeRequest.get(url, headers=header)
     assert_status_code(response, expected_status=200)
     log_request_response(statuses_url, response, header)
     
@@ -27,9 +28,9 @@ def test_BYT_T42_obtener_informacion_de_un_estado_con_ID_de_letras(statuses_url,
     """
     Descripción: El Admin no debe poder obtener información de un estado de empleado si el id es de solo letras
     """
-    id_invalido = ''.join(random.choices(string.ascii_letters, k=2))
+    id_invalido = faker.lexify(text="??") 
     url = f"{statuses_url}/{id_invalido}"
-    response = requests.get(url, headers=header)
+    response = OrangeRequest.get(url, headers=header)
     assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header)
     
@@ -41,14 +42,14 @@ def test_BYT_T43_obtener_informacion_de_un_estado_con_token_invalido(statuses_ur
     """
     Descripción: El Admin no debe poder obtener información de un estado de empleado si el el token es invalido
     """
-    id_estado_empleado = random.randint(1, 999)
+    id_estado_empleado = faker.random_int(min=1, max=999)
     url = f"{statuses_url}/{id_estado_empleado}"
     
     headers_invalidos = {
         "Authorization": "TOKEN_NO_VALIDO_123",
         "Content-Type": "application/json"
     }
-    response = requests.get(url, headers=headers_invalidos)
+    response = OrangeRequest.get(url, headers=headers_invalidos)
     assert_status_code(response, expected_status=401)
     log_request_response(statuses_url, response)
     
@@ -62,7 +63,7 @@ def test_BYT_T44_obtener_informacion_de_un_estado_con_caracteres_especiales(stat
     """
     url = f"{statuses_url}/@$"
     
-    response = requests.get(url, headers=header)
+    response = OrangeRequest.get(url, headers=header)
     assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header)
 
@@ -79,7 +80,7 @@ def test_BYT_T46_obtener_informacion_del_estado_sin_token_de_autorizacion(status
         "Content-Type": "application/json"
         # Sin 'Authorization'
     }
-    response = requests.get(url, headers=headers_sin_token)
+    response = OrangeRequest.get(url, headers=headers_sin_token)
     assert_status_code(response, expected_status=401)
     log_request_response(statuses_url, response)
 
@@ -92,29 +93,21 @@ def test_BYT_T80_obtener_informacion_del_estado_con_id_0(statuses_url, header):
     """
     url = f"{statuses_url}/0"
     
-    response = requests.get(url, headers=header)
+    response = OrangeRequest.get(url, headers=header)
     assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header)
 
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
-def test_BYT_T81_obtener_informacion_del_estado_con_nombre_del_id(statuses_url, header):
+def test_BYT_T81_obtener_informacion_del_estado_con_nombre_del_id(statuses_url, header, employment_status_create):
     """
     Descripción: El admin crea un estado, y quiere obtener información del estado con el nombre del estado creado
     """
-    
-    payload = json.dumps({
-        "name" : "Flash" + str(random.randint(1000, 9999))
-    })
-    nombre=payload
-    
-    response = requests.post(statuses_url, headers=header, data=payload)
-    assert response.status_code == 200
-    assert_resource_response_schema(response, "create_employment_status_schema_response.json")
+    nombre= employment_status_create["name"]
     
     url = f"{statuses_url}/{nombre}"
-    response = requests.get(url, headers=header)
+    response = OrangeRequest.get(url, headers=header)
     assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header)
     
@@ -125,10 +118,10 @@ def test_BYT_T84_obtener_informacion_del_estado_con_ID_inexistente(statuses_url,
     """
     Descripción: El admin intenta obtener el estado, del id que no existe
     """
-    id_inexistente = random.randint(10000, 99999)
+    id_inexistente = faker.random_int(min=10000, max=99999)
     url = f"{statuses_url}/{id_inexistente}"
     
-    response = requests.get(url, headers=header)
+    response = OrangeRequest.get(url, headers=header)
     assert_status_code(response, expected_status=404)
     assert_resource_response_schema(response, "error_message_schema_response.json")
     log_request_response(statuses_url, response, header)
@@ -142,7 +135,7 @@ def test_BYT_T82_obtener_informacion_del_estado_sin_mandar_el_ID(statuses_url, h
     """
     url = f"{statuses_url}/"
     
-    response = requests.get(url, headers=header)
+    response = OrangeRequest.get(url, headers=header)
     assert_status_code(response, expected_status=404)
     #No se puede hacer el assert porque en el postman no muestra ningun html, json
     #assert_resource_response_schema(response, "error_message_schema_response.json")
@@ -157,6 +150,6 @@ def test_BYT_T91_obtener_informacion_del_estado_con_ID_negativos(statuses_url, h
     """
     url = f"{statuses_url}/-1"
     
-    response = requests.get(url, headers=header)
+    response = OrangeRequest.get(url, headers=header)
     assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header)
