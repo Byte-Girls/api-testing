@@ -141,6 +141,7 @@ def test_BYT_T63_crear_usuario_sin_username_devuelve_422(user_url, header, creat
     assert response.status_code == 422
     log_request_response(user_url, response, header, payload)
 
+@pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
 def test_BYT_T64_crear_usuario_sin_password_devuelve_422(user_url, header, create_employee):

@@ -17,6 +17,7 @@ def test_BYT_T26_obtener_detalles_del_usuario_con_ID_válido_devuelve_código_20
     assert_status_code(response, 200)
     assert_resource_response_schema(response, "user_schema_response.json")
 
+@pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.positivo
 def test_BYT_T49_obtener_usuario_con_ID_mínimo_válido_1_devuelve_200_OK_si_el_usuario_existe(user_api):
