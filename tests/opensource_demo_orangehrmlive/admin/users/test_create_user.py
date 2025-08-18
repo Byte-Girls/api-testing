@@ -408,7 +408,7 @@ def test_BYT_T76_crear_usuario_userRoleId_vacio_devuelve_422(user_url, header, c
 @pytest.mark.funcional
 @pytest.mark.negativo
 @pytest.mark.regression
-@pytest.mark.xfail(reason="Known Issue. BYT-99: La creación de usuario permite passwords de cualquier tamaño (incluso de 0 carácteres)", run=False)
+@pytest.mark.xfail(reason="Known Issue. BYT-101: La creación de usuario permite passwords de cualquier tamaño (incluso de 0 carácteres)", run=False)
 def test_BYT_T77_crear_usuario_password_invalido_devuelve_422(user_url, header, create_employee):
     """
     Descripción: Verifica que la creación de un usuario con password invalido 
