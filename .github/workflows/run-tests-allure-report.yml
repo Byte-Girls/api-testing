@@ -10,7 +10,7 @@ on:
       branch:
         description: 'Branch to run tests on'
         required: true
-        default: 'main'
+        default: 'develop'
 
 jobs:
   test:
@@ -40,6 +40,10 @@ jobs:
       run: |
         mkdir -p test-results/allure-results
         PYTHONPATH=$PYTHONPATH:. pytest -v --alluredir=test-results/allure-results || true
+
+    - name: Copy categories.json for Allure
+      run: |
+        cp allure-results/categories.json test-results/allure-results/
 
     - name: Generate Allure HTML report
       run: |

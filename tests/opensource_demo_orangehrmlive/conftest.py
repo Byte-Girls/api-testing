@@ -53,22 +53,3 @@ def user_api(user_url, header):
 def employee_api(employee_url, header):
     return EmployeeAPI(employee_url, header)
 
-MARKERS_CATEGORIES = [
-    "smoke",
-    "regression",
-    "funcional",
-    "negativo",
-    "positivo",
-    "seguridad",
-    "rendimiento",
-    "valor_limite",
-    "e2e",
-]
-
-def pytest_runtest_makereport(item, call):
-    """Convierte los pytest.mark en categorías de Allure automáticamente"""
-    for mark in item.iter_markers():
-        if mark.name in MARKERS_CATEGORIES:
-            allure.dynamic.label('category', mark.name)
-
-            
