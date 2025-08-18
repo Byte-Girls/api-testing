@@ -5,10 +5,12 @@ import pytest
 import time
 from src.assertions.common_assertions import *
 from src.orange_api.api_request import OrangeRequest
+from src.utils.loggers_helpers import log_request_response
 
 @pytest.mark.smoke
 @pytest.mark.regression
 @pytest.mark.funcional
+@pytest.mark.positivo
 def test_BYT_T2_Obtener_una_categoria_de_trabajo_existente_con_id_valido(category_url, header,category):
   """
   Descripción:  Verificar que el administrador pueda consultar una categoría de trabajo existente 
@@ -21,10 +23,8 @@ def test_BYT_T2_Obtener_una_categoria_de_trabajo_existente_con_id_valido(categor
   response = OrangeRequest.get(url, headers=header)
   assert response.status_code == 200
   assert_resource_response_schema(response, "category_schema_response.json")
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
+  log_request_response(url, response, header)
+
   
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -40,12 +40,8 @@ def test_BYT_T87_Obtener_categoria_con_id_negativo(category_url, header):
   url = f"{category_url}/{id_negativo}"
   response = OrangeRequest.get(url, headers=header)
   assert response.status_code == 422
-  f"Se esperaba 422, pero se recibió {response.status_code}"
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  
+  log_request_response(url, response, header)
+
   
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -61,12 +57,9 @@ def test_BYT_T4_Obtener_una_categoria_con_id_invalido(category_url, header):
   url = f"{category_url}/{id_invalido}"
   response = OrangeRequest.get(url, headers=header)
   assert response.status_code == 422 
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  
+  log_request_response(url, response, header)
 
+  
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.negativo
@@ -82,10 +75,8 @@ def test_BYT_T88_Obtener_categoria_con_id_extremadamente_grande(category_url, he
   response = OrangeRequest.get(url, headers=header)
   assert response.status_code == 404, \
     f"Se esperaba 404 Not Found, pero se recibió {response.status_code}"
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
+  log_request_response(url, response, header)
+
   
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -100,12 +91,9 @@ def test_BYT_T89_Obtener_categoria_con_id_cero(category_url, header):
   id_cero = 0
   url = f"{category_url}/{id_cero}"
   response = OrangeRequest.get(url, headers=header)
-  assert response.status_code == 422, \
-    f"Se esperaba 422, pero se recibió {response.status_code}"
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
+  assert response.status_code == 422
+  log_request_response(url, response, header)
+
   
 @pytest.mark.regression
 @pytest.mark.funcional
@@ -121,10 +109,8 @@ def test_BYT_T90_Obtener_categoria_con_id_decimal_interpreta_como_entero(categor
   url = f"{category_url}/{id_decimal}"
   response = OrangeRequest.get(url, headers=header)
   assert response.status_code == 400
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
+  log_request_response(url, response, header)
+
   
 @pytest.mark.regression
 @pytest.mark.funcional 
@@ -140,12 +126,9 @@ def test_BYT_T3_Obtener_una_categoria_con_id_inexistente(category_url, header):
   url = f"{category_url}/{id_inexistente}"
   response = OrangeRequest.get(url, headers=header)
   assert response.status_code == 404  
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
-  
+  log_request_response(url, response, header)
 
+  
 @pytest.mark.regression
 @pytest.mark.funcional
 @pytest.mark.rendimiento
@@ -165,10 +148,8 @@ def test_BYT_T8_Tiempo_de_respuesta_al_obtener_categoria(category_url, header,ca
 
   assert response.status_code == 200
   assert response_time < 2, f"Tiempo de respuesta excedido: {response_time:.4f} segundos"
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
+  log_request_response(url, response, header)
+
   
 @pytest.mark.smoke
 @pytest.mark.regression
@@ -190,10 +171,7 @@ def test_BYT_T7_Verificar_campos_id_y_name_en_respuesta(category_url, header,cat
   assert "name" in data, "El campo 'name' no está presente en la respuesta."
   assert isinstance(data["id"], int)
   assert isinstance(data["name"], str)
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
+  log_request_response(url, response, header)
 
 
 @pytest.mark.regression
@@ -202,12 +180,11 @@ def test_BYT_T7_Verificar_campos_id_y_name_en_respuesta(category_url, header,cat
 @pytest.mark.seguridad
 def test_BYT_T6_Obtener_categoria_con_token_invalido(category_url):
   """
-  Descripción: Verificar que el sistema rechace la solicitud de obtener una categoría con token inválido.
+  Descripción: Verificar que el sistema rechace la solicitud de obtener una categoría 
+  con token inválido.
   
   Prioridad: Alta
   """
-
-
   category_id = 1
   url = f"{category_url}/{category_id}"
 
@@ -218,11 +195,7 @@ def test_BYT_T6_Obtener_categoria_con_token_invalido(category_url):
   
   response = OrangeRequest.get(url, headers=headers)
   assert response.status_code == 401  
-
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
+  log_request_response(url, response)
 
 
 @pytest.mark.regression
@@ -242,9 +215,6 @@ def test_BYT_T5_Obtener_categoria_sin_autenticacion(category_url):
   
   response = OrangeRequest.get(url, headers={})
   assert response.status_code == 401  
+  log_request_response(url, response)
 
-  logger.info("domain: %s", category_url)
-  logger.debug("GET URL: %s", url)
-  logger.info("status code: %s", response.status_code)
-  logger.debug("response: %s", response.json())
 
