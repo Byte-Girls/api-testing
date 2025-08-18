@@ -39,7 +39,7 @@ jobs:
     - name: Run tests with Allure
       run: |
         mkdir -p test-results/allure-results
-        pytest -v --alluredir=test-results/allure-results || true
+        PYTHONPATH=$PYTHONPATH:. pytest -v --alluredir=test-results/allure-results || true
 
     - name: Generate Allure HTML report
       run: |
