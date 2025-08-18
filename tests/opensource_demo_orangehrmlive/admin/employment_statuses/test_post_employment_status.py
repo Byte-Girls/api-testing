@@ -3,8 +3,12 @@ import random
 import pytest
 import requests
 import string
+from faker import Faker
 from src.assertions.common_assertions import * 
 from src.utils.loggers_helpers import log_request_response
+from src.orange_api.api_request import OrangeRequest
+
+faker = Faker()
    
 @pytest.mark.funcional
 @pytest.mark.positivo
@@ -16,7 +20,7 @@ def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
     """
     
     payload = json.dumps({
-        "name" : "Maria" + str(random.randint(1000, 9999))
+        "name" : "Hours" + str(faker.random_int(min=1000, max=9999))
     })
     
     response = requests.post(statuses_url, headers=header, data=payload)
@@ -28,7 +32,7 @@ def test_BYT_T37_crear_un_estado_de_empleado(statuses_url, header):
     assert response_data["name"] == expected_payload_dict["name"]
     #validación del get
     url = f"{statuses_url}/{response_data['id']}"
-    response = requests.get(url, headers=header)
+    response = OrangeRequest.get(url, headers=header)
     assert_status_code(response, expected_status=200)
     response_data = response.json()["data"]
     # comparacion dierecta campo a campo
@@ -51,7 +55,7 @@ def test_BYT_T38_crear_estado_sin_nombre(statuses_url, header):
         "name" : "" 
     })
     
-    response = requests.post(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.post(statuses_url, headers=header, payload=payload)
     assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header, payload)
 
@@ -69,7 +73,7 @@ def test_BYT_T40_crear_estado_con_nombre_de_51_caracteres(statuses_url, header):
         "name" : "Lorem Ipsum is simply dummy text of the printing an" 
     })
         
-    response = requests.post(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.post(statuses_url, headers=header, payload=payload)
     assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header, payload)
 
@@ -82,13 +86,13 @@ def test_BYT_T47_crear_estado_con_nombre_de_1_caracteres(statuses_url, header):
     """
     Descripción: El admin crea un estado de nombre que contiene 1 caracter y el sistema si permite
     """
-    letra_un_caracter = random.choice(string.ascii_letters)
+    letra_un_caracter = faker.lexify(text="?")
     
     payload = json.dumps({
         "name" : letra_un_caracter 
     })
     
-    response = requests.post(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.post(statuses_url, headers=header, payload=payload)
     assert_status_code(response, expected_status=200)
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     id_nombre= response.json()["data"]["id"] 
@@ -105,10 +109,10 @@ def test_BYT_T85_crear_un_estado_de_empleado_con_nombre_de_numeros(statuses_url,
     """
     
     payload = json.dumps({
-        "name" : "123" + str(random.randint(1000, 9999))
+        "name" : "123" + str(faker.random_int(min=1000, max=9999))
     })
     
-    response = requests.post(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.post(statuses_url, headers=header, payload=payload)
     assert_status_code(response, expected_status=400)
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     id_nombre= response.json()["data"]["id"] 
@@ -124,12 +128,12 @@ def test_BYT_T86_crear_un_estado_de_empleado_con_caracteres_especiales(statuses_
     """
     Descripción: El admin quiere crear un nuevo estado de empleado con el campo name, de solo caracteres especiales
     """
-    caracteres_especiales = ''.join(random.choices(string.punctuation, k=10))
+    caracteres_especiales = ''.join(faker.random_elements(elements=string.punctuation, length=10, unique=False))
     payload = json.dumps({
         "name" : caracteres_especiales
     })
     
-    response = requests.post(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.post(statuses_url, headers=header, payload=payload)
     assert_status_code(response, expected_status=400)
     assert_resource_response_schema(response, "create_employment_status_schema_response.json")
     id_nombre= response.json()["data"]["id"] 
@@ -165,28 +169,27 @@ def test_BYT_T39_crear_un_estado_de_empleado_duplicado(statuses_url, header):
     """
     Descripción: El admin quiere crear un estado de empleado duplicado, el sistema no debe permitir
     """
-    nombre_duplicado = ''.join(random.choices(string.ascii_letters, k=6))
+    nombre_duplicado = faker.lexify(text='?'*6, letters=string.ascii_letters)
     
     payload = json.dumps({
         "name" : nombre_duplicado
     })
     
-    response_one = requests.post(statuses_url, headers=header, data=payload)
+    response_one = OrangeRequest.post(statuses_url, headers=header, payload=payload)
     assert_status_code(response_one, expected_status=200)
     
-    response_two = requests.post(statuses_url, headers=header, data=payload)
+    response_two = OrangeRequest.post(statuses_url, headers=header, payload=payload)
     assert_status_code(response_two, expected_status=422)
     assert_resource_response_schema(response_one, "create_employment_status_schema_response.json")
+    log_request_response(statuses_url, response_two, header, payload)
     id_nombre= response_one.json()["data"]["id"] 
     delete_status(statuses_url, header, id_nombre)
-    
-    log_request_response(statuses_url, response_two, header, payload)
     
 @pytest.mark.funcional
 @pytest.mark.seguridad
 @pytest.mark.negativo
 @pytest.mark.regression
-def test_BYT_T39_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
+def test_BYT_T41_crear_un_estado_de_empleado_sin_autenticacion(statuses_url):
     """
     Descripción: El admin quiere crear un nuevo estado de empleado, pero sin autenticación
     """
@@ -214,7 +217,7 @@ def test_BYT_T92_crear_un_estado_de_empleado_con_el_campo_name_de_espacio(status
         "name" : name_espacio
     })
     
-    response = requests.post(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.post(statuses_url, headers=header, payload=payload)
     assert_status_code(response, expected_status=422)
     log_request_response(statuses_url, response, header, payload)
 
@@ -222,6 +225,6 @@ def delete_status(statuses_url, header, id_nombre):
     payload = json.dumps({
         "ids": [id_nombre]
     })
-    response = requests.delete(statuses_url, headers=header, data=payload)
+    response = OrangeRequest.delete(statuses_url, headers=header, payload=payload)
     assert_status_code(response, expected_status=200)
     
