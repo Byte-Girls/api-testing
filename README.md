@@ -87,7 +87,6 @@ Este token se actualiza automáticamente mediante el script en python `src/utils
 |-------------|--------------------------------|-------|--------------------------------------|
 | BYT-11      | Obtener estado de empleado     | GET   | `/admin/employment-statuses/{id}`   |
 | BYT-25      | Actualizar estado de empleado  | PUT   | `/admin/employment-statuses/{id}`   |
-| BYT-12      | Listar estados de empleado     | GET   | `/admin/employment-statuses`        |
 | BYT-10      | Crear estado de empleado       | POST  | `/admin/employment-statuses`        |
 | BYT-26      | Eliminar estado de empleado    | DELETE| `/admin/employment-statuses`        |
 
@@ -96,8 +95,7 @@ Este token se actualiza automáticamente mediante el script en python `src/utils
 | Jira Código | Funcionalidad                  | Verbo | Endpoint                          |
 |-------------|--------------------------------|-------|-----------------------------------|
 | BYT-3       | Obtener categoría de trabajo  | GET   | `/admin/job-categories/{id}`     |
-| BYT-27      | Actualizar categoría trabajo  | PUT   | `/admin/job-categories/{id}`     |
-| BYT-4       | Listar categorías de trabajo  | GET   | `/admin/job-categories`          |
+| BYT-4      | Actualizar categoría trabajo  | PUT   | `/admin/job-categories/{id}`      |
 | BYT-2       | Crear categoría de trabajo    | POST  | `/admin/job-categories`          |
 | BYT-24      | Eliminar categoría de trabajo | DELETE| `/admin/job-categories`          |
 
@@ -119,6 +117,7 @@ Este token se actualiza automáticamente mediante el script en python `src/utils
 | Pruebas de seguridad   | Validación de tokens y manejo de errores no autenticados. |
 | Pruebas de rendimiento | Tiempo de respuesta bajo carga (GET <1s, POST/PUT <2s). |
 | Pruebas valor limite   | Entradas máximas/mínimas, campos vacíos, inputs inválidos. |
+| E2E Flow               | Validación integral de obtener, crear y eliminar en procesos críticos.|
 
 ---
 
@@ -214,6 +213,7 @@ markers =
     seguridad: tests para validar manejo de tokens inválidos o ausentes
     rendimiento: tests para medir tiempos de respuesta
     valor_limite: tests con entradas mínimas/máximas o inválidas
+    e2e: tests de flujo completo
 ```
 
 ## Equipo de Trabajo
@@ -223,7 +223,6 @@ markers =
 | Carolina Melendez             | QA Lead          | Coordinación, asignación, revisión +Diseño e implentación |
 | Maria Calani Uvaldez          | Tester Developer | Diseño e implentación de pruebas automatizadas  |
 | Jhesabel Cespedes             | Tester Developer | Diseño e implentación de pruebas automatizadas  |
-| Katerine Isabel Rojas Calle   | Tester Developer | Diseño e implentación de pruebas automatizadas  |
 
                                                       
                                                       #  Anexos
@@ -244,4 +243,3 @@ La carpeta Exploratory Testing contiene la colección de Postman utilizada para 
 ### Uso del archivo
 Puedes importar el archivo JSON en Postman desde la opción:
 File → Import → Upload File → Seleccionar Orange HRM API.postman_collection.json
-
