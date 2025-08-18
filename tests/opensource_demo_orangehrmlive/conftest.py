@@ -1,5 +1,6 @@
 import pytest
 import config as conf
+import allure
 from  src.orange_api.endpoint import OrangeEndpoints
 from src.orange_api.resources_api import *
 import logging
@@ -51,3 +52,4 @@ def user_api(user_url, header):
 @pytest.fixture(scope="module")
 def employee_api(employee_url, header):
     return EmployeeAPI(employee_url, header)
+
